@@ -3,42 +3,32 @@ package try2;
 import java.awt.*;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 public class Window extends JFrame {
 	
-	//Panel myPanel;
-	Menu menu;
-	ToolBar toolBar;
-	JPanel panel;
-	JLabel label;
+	//Panel panel;
+	private Menu menu;
+	private ToolBar toolBar;
+	private JLabel label;
 	
 	public Window(){
 		this.setTitle("Photo Browser");
-		//this.setSize(600,600);
 		this.setPreferredSize(new Dimension(500,500));
 		this.setLocation(500, 100); //to centarize?
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setResizable(true);
-		this.setMinimumSize(new Dimension(250,200));
-		
-		//myPanel = new Panel();
+		this.setMinimumSize(new Dimension(220,150));
+		this.setLayout(new BorderLayout());
 
-		Container contentPane = getContentPane();
-		//contentPane.add(myPanel);
+		label = new JLabel();
+		label.setText("Status bar");
+		menu = new Menu(label);
+		toolBar = new ToolBar(label);
+		//panel = new Panel();
 		
-		contentPane.setLayout(new BorderLayout());
-		panel = new JPanel();
-		menu = new Menu();
-		toolBar = new ToolBar();
-		label = new JLabel("Status bar");
-		
-		panel.setLayout(new FlowLayout());
-		panel.add(menu);
-		panel.add(toolBar);		
-		
-		contentPane.add(panel, BorderLayout.NORTH);
-		contentPane.add(label, BorderLayout.SOUTH);
+		this.setJMenuBar(menu);	
+		this.add(toolBar, BorderLayout.NORTH);
+		this.add(label, BorderLayout.SOUTH);
 		
 		this.pack();
 		this.setVisible(true);
