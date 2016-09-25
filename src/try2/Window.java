@@ -10,6 +10,7 @@ public class Window extends JFrame {
 	private Menu menu;
 	private ToolBar toolBar;
 	private JLabel label;
+	private PhotoComponent pc;
 	
 	public Window(){
 		this.setTitle("Photo Browser");
@@ -19,16 +20,19 @@ public class Window extends JFrame {
 		this.setResizable(true);
 		this.setMinimumSize(new Dimension(220,150));
 		this.setLayout(new BorderLayout());
+		//this.setDefaultLookAndFeelDecorated(true);
+	    //this.getContentPane().setBackground(Color.BLUE);
 
 		label = new JLabel();
 		label.setText("Status bar");
 		menu = new Menu(label);
 		toolBar = new ToolBar(label);
-		//panel = new Panel();
+		pc = new PhotoComponent();
 		
 		this.setJMenuBar(menu);	
 		this.add(toolBar, BorderLayout.NORTH);
 		this.add(label, BorderLayout.SOUTH);
+		this.add(pc, BorderLayout.CENTER);
 		
 		this.pack();
 		this.setVisible(true);
