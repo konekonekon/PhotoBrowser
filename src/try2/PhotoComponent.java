@@ -10,15 +10,20 @@ public class PhotoComponent extends JComponent implements MouseListener, MouseMo
 	private Color color;
 	private ArrayList<Point> currentLine;
 	private ArrayList<ArrayList<Point>> lines;
+	private String str;
+	private Point p;
+	private int statusMouse = 0;
 
 	public PhotoComponent(){
 		super();
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		lines = new ArrayList<ArrayList<Point>>();
+		p = new Point();
+		str = "";
 	}
 	
-	//draw stg, write text
+	//TODO : color, thickness for line/text
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
 		g.setColor(Color.white);
@@ -26,14 +31,32 @@ public class PhotoComponent extends JComponent implements MouseListener, MouseMo
 		Graphics2D g2 = (Graphics2D)g;
 		g2.setColor(color.RED);
 
-/*		if(currentLine != null)
-			drawLine(currentLine, g2);*/
+		if (statusMouse == 2){
+			System.out.println("Dragged");
+			for (ArrayList<Point> line : lines)
+	        	drawing(line, g2);
+			statusMouse = 0;
+		}
+		if (statusMouse == 1){
+			System.out.println("Clicked");
+			g2.drawString(str, p.x, p.y);
+			statusMouse = 0;
+		}
 		
-        for (ArrayList<Point> line : lines)
-        	drawLine(line, g2);
+		//writing(str, p, g2);
+
+/*		if(currentLine != null)
+			drawing(currentLine, g2);*/
+/*        for (ArrayList<Point> line : lines)
+        	drawing(line, g2);*/
 	}
 	
-	public void drawLine(ArrayList<Point> line, Graphics2D g2){
+	public void writing(String string, Point p, Graphics2D g2){
+		
+		g2.drawString(string, p.x, p.y);
+	}
+	
+	public void drawing(ArrayList<Point> line, Graphics2D g2){
 		int i = 0;
 		while(i < line.size()-1){
 			Point p1 = line.get(i);
@@ -42,12 +65,23 @@ public class PhotoComponent extends JComponent implements MouseListener, MouseMo
 			i++;
 		}
 	}
-
+//TODO get what user type for "str"
 	public void mouseClicked(MouseEvent e) {
+		statusMouse = 1;
+/*		p = e.getPoint();
+		str = "";
+		repaint();*/
+		
+		p = e.getPoint();
+		str = "stg";
+		//System.out.println("Clicked");
+		repaint();
 		
 	}
 
 	public void mousePressed(MouseEvent e) {
+		
+		//System.out.println("Pressed");
 		currentLine = new ArrayList<Point>();
 		lines.add(currentLine);
 	    currentLine.add(e.getPoint());
@@ -55,12 +89,11 @@ public class PhotoComponent extends JComponent implements MouseListener, MouseMo
 	}
 
 	public void mouseReleased(MouseEvent e) {
-	    currentLine.add(e.getPoint());
-	    //lines.add(currentLine);
-		repaint();
+
 	}
 	
 	public void mouseDragged(MouseEvent e) {
+		statusMouse = 2;
 	    currentLine.add(e.getPoint());
 	    repaint();
 	}
