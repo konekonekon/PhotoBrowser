@@ -25,9 +25,9 @@ public class Window extends JFrame {
 
 		label = new JLabel();
 		label.setText("Status bar");
-		menu = new Menu(label);
-		toolBar = new ToolBar(label);
 		pc = new PhotoComponent();
+		toolBar = new ToolBar(label);
+		menu = new Menu(label, pc);
 		
 		this.setJMenuBar(menu);	
 		this.add(toolBar, BorderLayout.NORTH);

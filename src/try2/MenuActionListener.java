@@ -1,8 +1,12 @@
 package try2;
 
 import java.awt.Component;
+import java.awt.Image;
 import java.awt.event.*;
+import java.awt.image.*;
 import java.io.*;
+
+import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -11,10 +15,13 @@ public class MenuActionListener implements ActionListener {
 
 	private JLabel status;
 	private Menu menu;
+	private BufferedImage img;
+	private PhotoComponent pc;
 	
-	MenuActionListener(Menu menu, JLabel status) {
+	MenuActionListener(Menu menu, JLabel status, PhotoComponent pc) {
 		this.status = status;
 		this.menu = menu;
+		this.pc = pc;
 	}
 	
 	public void actionPerformed(ActionEvent e) {
@@ -31,8 +38,17 @@ public class MenuActionListener implements ActionListener {
 			Component parent = null;
 			int returnVal = fileChooser.showDialog(parent, "Choose a file"); //parent??
 			if(returnVal == JFileChooser.APPROVE_OPTION){
-				File[] listFiles = fileChooser.getSelectedFiles();
-				System.out.println("You chose " + listFiles.length + " photos.");
+				File file = fileChooser.getSelectedFile();
+				//System.out.println("You chose " + listFiles.length + " photos.");
+				String path = file.getAbsolutePath();
+				System.out.println(path);
+				
+				try {
+					img = ImageIO.read(new File(path));
+					this.pc.setImage(img);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 			}
 		}
 		

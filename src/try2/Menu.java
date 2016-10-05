@@ -18,12 +18,12 @@ public class Menu extends JMenuBar {
 	JRadioButtonMenuItem browser;
 	JRadioButtonMenuItem split;
 	
-	public Menu(JLabel status){
+	public Menu(JLabel status, PhotoComponent pc){
 		//File Menu
 		fileMenu = new JMenu("File");
 		this.add(fileMenu);
 		
-		MenuActionListener listener = new MenuActionListener(this, status);
+		MenuActionListener listener = new MenuActionListener(this, status, pc);
 		
 		//File menuItems
 		importMI = new JMenuItem("Import");

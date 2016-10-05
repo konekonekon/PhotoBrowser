@@ -2,8 +2,11 @@ package try2;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
-import javax.swing.JComponent;
+import java.awt.geom.AffineTransform;
+import java.awt.image.*;
+import java.util.*;
+
+import javax.swing.*;
 
 public class PhotoComponent extends JComponent implements MouseListener, MouseMotionListener {
 
@@ -13,6 +16,8 @@ public class PhotoComponent extends JComponent implements MouseListener, MouseMo
 	private String str;
 	private Point p;
 	private int statusMouse = 0;
+	private BufferedImage image;
+	BufferedImageOp op;
 
 	public PhotoComponent(){
 		super();
@@ -26,17 +31,20 @@ public class PhotoComponent extends JComponent implements MouseListener, MouseMo
 	//TODO : color, thickness for line/text
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
-		g.setColor(Color.white);
-        g.fillRect(0, 0, getWidth(), getHeight());
 		Graphics2D g2 = (Graphics2D)g;
+		g2.setColor(Color.white);
+        g2.fillRect(0, 0, getWidth(), getHeight());
 		g2.setColor(color.RED);
+
+		g2.drawImage(image, op, 0,0);
+		
 
 		if (statusMouse == 2){
 			System.out.println("Dragged");
 			for (ArrayList<Point> line : lines)
-	        	drawing(line, g2);
+	        	drawingStroke(line, g2);
 			statusMouse = 0;
-		}
+		}//text 
 		if (statusMouse == 1){
 			System.out.println("Clicked");
 			g2.drawString(str, p.x, p.y);
@@ -51,12 +59,12 @@ public class PhotoComponent extends JComponent implements MouseListener, MouseMo
         	drawing(line, g2);*/
 	}
 	
-	public void writing(String string, Point p, Graphics2D g2){
+	public void typingText(String string, Point p, Graphics2D g2){
 		
 		g2.drawString(string, p.x, p.y);
 	}
 	
-	public void drawing(ArrayList<Point> line, Graphics2D g2){
+	public void drawingStroke(ArrayList<Point> line, Graphics2D g2){
 		int i = 0;
 		while(i < line.size()-1){
 			Point p1 = line.get(i);
@@ -65,6 +73,8 @@ public class PhotoComponent extends JComponent implements MouseListener, MouseMo
 			i++;
 		}
 	}
+
+	
 //TODO get what user type for "str"
 	public void mouseClicked(MouseEvent e) {
 		statusMouse = 1;
@@ -109,6 +119,16 @@ public class PhotoComponent extends JComponent implements MouseListener, MouseMo
 	public void mouseMoved(MouseEvent e) {
 		
 	}
+
+	public Image getImage() {
+		return image;
+	}
+
+	public void setImage(BufferedImage image) {
+		this.image = image;
+		repaint();
+	}
+
 
 
 }
