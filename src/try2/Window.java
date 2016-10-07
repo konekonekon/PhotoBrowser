@@ -14,12 +14,20 @@ public class Window extends JFrame {
 	
 	public Window(){
 		this.setTitle("Photo Browser");
-		this.setPreferredSize(new Dimension(500,500));
-		this.setLocation(500, 100); //to centarize?
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setResizable(true);
 		this.setMinimumSize(new Dimension(220,150));
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		int screenWidth = (int)screenSize.getWidth();
+		int screenHeight = (int)screenSize.getHeight();
+		int preferredWidth = (int)(screenWidth *0.8);
+		int preferredHeight = (int)(screenHeight *0.8);
+		this.setPreferredSize(new Dimension(preferredWidth, preferredHeight));
+		int preferredX = (screenWidth - preferredWidth) /2;
+		int preferredY = (screenHeight - preferredHeight) /2;
+		this.setLocation(preferredX, preferredY);
+		this.setMaximizedBounds(new Rectangle(screenWidth, screenHeight));
+		this.setResizable(true);
 		this.setLayout(new BorderLayout());
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//this.setDefaultLookAndFeelDecorated(true);
 	    //this.getContentPane().setBackground(Color.BLUE);
 
@@ -33,7 +41,7 @@ public class Window extends JFrame {
 		this.add(toolBar, BorderLayout.NORTH);
 		this.add(label, BorderLayout.SOUTH);
 		this.add(pc, BorderLayout.CENTER);
-		
+
 		this.pack();
 		this.setVisible(true);
 	}
