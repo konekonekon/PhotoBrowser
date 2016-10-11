@@ -2,22 +2,21 @@ package try2;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.AffineTransform;
 import java.awt.image.*;
 import java.util.*;
 
 import javax.swing.*;
 
-public class PhotoComponent extends JComponent implements MouseListener,
-		MouseMotionListener {
+public class PhotoComponent extends JComponent implements MouseListener, MouseMotionListener {
 
-	private Color color;
 	private ArrayList<Point> currentLine;
 	private ArrayList<ArrayList<Point>> lines;
 	private String str;
 	private Point p;
 	private int statusMouse = 0;
 	private BufferedImage image;
+	private boolean isFlipped;
+
 
 	public PhotoComponent() {
 		super();
@@ -26,24 +25,32 @@ public class PhotoComponent extends JComponent implements MouseListener,
 		lines = new ArrayList<ArrayList<Point>>();
 		p = new Point();
 		str = "";
+		isFlipped = false;
 	}
 
 	// TODO : color, thickness for line/text
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
+		
+		RenderingHints rh = g2.getRenderingHints ();
+	    rh.put (RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+	    rh.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+	    g2.setRenderingHints (rh);
+	    
 		g2.setColor(Color.gray);
 		g2.fillRect(0, 0, getWidth(), getHeight());
-		g2.setColor(color.RED);
+		g2.setColor(Color.RED);
 
-		if (image != null) {
+		if (image != null){
 			this.displayImage(g2);
-		}		
-
+		}
+		
+		//to do
 		if (statusMouse == 2) {
 			System.out.println("Dragged");
 			for (ArrayList<Point> line : lines)
-				drawStroke(line, g2);
+				this.drawStroke(line, g2);
 			statusMouse = 0;
 		}// text
 		if (statusMouse == 1) {
@@ -66,15 +73,15 @@ public class PhotoComponent extends JComponent implements MouseListener,
 	private void displayImage(Graphics2D g2) {
 		int imgWidth = image.getWidth();
 		int imgHeight = image.getHeight();
-		double imgRatio = (double) imgHeight / imgWidth;
-		System.out.println("Image size : " + imgWidth + ", " + imgHeight);
+		double imgRatio = (double) imgHeight / (double) imgWidth;
 
 		int cvsWidth = this.getWidth();
 		int cvsHeight = this.getHeight();
-		double cvsRatio = (double) cvsHeight / cvsWidth;
-		System.out.println("Canvas size : " + cvsWidth + ", " + cvsHeight);
-
-		//start(x1,y1), end(x2,y2)
+		double cvsRatio = (double) cvsHeight / (double) cvsWidth;
+		//System.out.println("Canvas size : " + cvsWidth + ", " + cvsHeight);
+		
+		int viewWidth = 0;
+		int viewHeight = 0;
 		int x1 = 0;
 		int y1 = 0;
 		int x2 = 0;
@@ -83,28 +90,37 @@ public class PhotoComponent extends JComponent implements MouseListener,
 		if (imgWidth < cvsWidth && imgHeight < cvsHeight) {
 			x1 = (cvsWidth - imgWidth) / 2;
 			y1 = (cvsHeight - imgHeight) / 2;
-			x2 = imgWidth + x1;
-			y2 = imgHeight + y1;
+			x2 = x1 + imgWidth;
+			y2 = y1 + imgHeight;
 		} 
 		else {
 			if (cvsRatio > imgRatio) {
-				y1 = cvsHeight;
-				cvsHeight = (int) (cvsWidth * imgRatio);
-				y1 = (y1 - cvsHeight) / 2;
+				viewWidth = cvsWidth;
+				viewHeight = (int) (viewWidth * imgRatio);
+				x1 = 0;
+				x2 = cvsWidth;
+				y1 = (cvsHeight - viewHeight) / 2;
+				y2 = y1 + viewHeight;
 			} 
 			else {
-				x1 = cvsWidth;
-				cvsWidth = (int) (cvsHeight / imgRatio);
-				x1 = (x1 - cvsWidth) / 2;
+				viewHeight = cvsHeight;
+				viewWidth = (int) (viewHeight / imgRatio);
+				y1 = 0;
+				y2 = cvsHeight;
+				x1 = (cvsWidth - viewWidth) / 2;
+				x2 = x1 + viewWidth;
 			}
-			x2 = cvsWidth + x1;
-			y2 = cvsHeight + y1;
 		}
-		g2.drawImage(image, x1, y1, x2, y2, 0, 0, imgWidth, imgHeight, null);
+		if (isFlipped == false){
+			g2.drawImage(image, x1, y1, x2, y2, 0, 0, imgWidth, imgHeight, null);
+		}
+		if (isFlipped == true){
+			g2.setColor(Color.white);
+			g2.fillRect(x1, y1, viewWidth, viewHeight);
+		}
 	}
 	 
-
-	public void typingText(String string, Point p, Graphics2D g2) {
+	public void writeText(String string, Point p, Graphics2D g2) {
 
 		g2.drawString(string, p.x, p.y);
 	}
@@ -121,7 +137,12 @@ public class PhotoComponent extends JComponent implements MouseListener,
 
 	// TODO get what user type for "str"
 	public void mouseClicked(MouseEvent e) {
-		statusMouse = 1;
+		if (e.getClickCount() == 2){
+			isFlipped = !isFlipped;
+			repaint();
+		}
+		if (e.getClickCount() == 1){
+			statusMouse = 1;
 		/*
 		 * p = e.getPoint(); str = ""; repaint();
 		 */
@@ -130,7 +151,7 @@ public class PhotoComponent extends JComponent implements MouseListener,
 		str = "stg";
 		// System.out.println("Clicked");
 		repaint();
-
+		}
 	}
 
 	public void mousePressed(MouseEvent e) {
