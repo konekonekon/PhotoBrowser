@@ -3,6 +3,7 @@ package try2;
 import java.awt.*;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
 
 public class Window extends JFrame {
 	
@@ -11,6 +12,8 @@ public class Window extends JFrame {
 	private ToolBar toolBar;
 	private JLabel label;
 	private PhotoComponent pc;
+	private JScrollPane sp;
+	
 	
 	public Window(){
 		this.setTitle("Photo Browser");
@@ -18,8 +21,8 @@ public class Window extends JFrame {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int screenWidth = (int)screenSize.getWidth();
 		int screenHeight = (int)screenSize.getHeight();
-		int preferredWidth = (int)(screenWidth *0.8);
-		int preferredHeight = (int)(screenHeight *0.8);
+		int preferredWidth = (int)(screenWidth *0.7);
+		int preferredHeight = (int)(screenHeight *0.7);
 		this.setPreferredSize(new Dimension(preferredWidth, preferredHeight));
 		int preferredX = (screenWidth - preferredWidth) /2;
 		int preferredY = (screenHeight - preferredHeight) /2;
@@ -36,11 +39,17 @@ public class Window extends JFrame {
 		pc = new PhotoComponent();
 		toolBar = new ToolBar(label);
 		menu = new Menu(label, pc);
+		sp = new JScrollPane(pc);
+		sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		sp.getVerticalScrollBar().setUnitIncrement(10);
+		sp.getHorizontalScrollBar().setUnitIncrement(10);
 		
 		this.setJMenuBar(menu);	
 		this.add(toolBar, BorderLayout.NORTH);
 		this.add(label, BorderLayout.SOUTH);
-		this.add(pc, BorderLayout.CENTER);
+		//this.add(pc, BorderLayout.CENTER);
+		this.add(sp, BorderLayout.CENTER);
 
 		this.pack();
 		this.setVisible(true);
