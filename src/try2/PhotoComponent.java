@@ -13,15 +13,11 @@ public class PhotoComponent extends JComponent implements MouseListener, MouseMo
 	private ArrayList<Point> currentLineInBack;
 	private ArrayList<ArrayList<Point>> linesInFront;
 	private ArrayList<ArrayList<Point>> linesInBack;
-	/*private String str;
-	private Point p;
-	private int statusMouse = 0;*/
 	private BufferedImage image;
 	private boolean isFlipped;
 	private int viewWidth, viewHeight, imgWidth, imgHeight;
-	private int x1, y1, x2, y2;
-	JLabel canvasToDraw;
-
+	private int left, top, right, bottom;
+	private double viewRatio;
 
 	public PhotoComponent() {
 		super();
@@ -29,16 +25,14 @@ public class PhotoComponent extends JComponent implements MouseListener, MouseMo
 		addMouseMotionListener(this);
 		linesInFront = new ArrayList<ArrayList<Point>>();
 		linesInBack = new ArrayList<ArrayList<Point>>();
-		/*p = new Point();
-		str = "";*/
 		isFlipped = false;
 		viewWidth = 0;
 		viewHeight = 0;
-		x1 = 0;
-		y1 = 0;
-		x2 = 0;
-		y2 = 0;
-		canvasToDraw = new JLabel();
+		left = 0;
+		top = 0;
+		right = 0;
+		bottom = 0;
+		viewRatio = 1;
 	}
 
 	// TODO : color, thickness for line/text
@@ -54,11 +48,6 @@ public class PhotoComponent extends JComponent implements MouseListener, MouseMo
 		g2.setColor(Color.gray);
 		g2.fillRect(0, 0, getWidth(), getHeight());
 		
-
-/*		if (image != null){
-			this.displayImage(g2);
-		}*/
-		
 		if (image != null){
 
 			this.updateView();
@@ -66,7 +55,8 @@ public class PhotoComponent extends JComponent implements MouseListener, MouseMo
 			if (isFlipped == false){
 				//imgWidth = image.getWidth();
 				//imgHeight = image.getHeight();
-				g2.drawImage(image, x1, y1, x2, y2, 0, 0, imgWidth, imgHeight, null);
+				
+				g2.drawImage(image, left, top, right, bottom, 0, 0, imgWidth, imgHeight, null);
 				//g2.drawImage(image, null, 0, 0);
 				
 				for (ArrayList<Point> line : linesInFront)
@@ -76,7 +66,7 @@ public class PhotoComponent extends JComponent implements MouseListener, MouseMo
 			}
 			if (isFlipped == true){
 				g2.setColor(Color.WHITE);
-				g2.fillRect(x1, y1, viewWidth, viewHeight);
+				g2.fillRect(left, top, viewWidth, viewHeight);
 				
 				
 				for (ArrayList<Point> line : linesInBack)
@@ -101,38 +91,33 @@ public class PhotoComponent extends JComponent implements MouseListener, MouseMo
 		int cvsHeight = this.getHeight();
 		double cvsRatio = (double) cvsHeight / (double) cvsWidth;
 		
-		double viewRatio = 0;
-		
 		if (imgWidth < cvsWidth && imgHeight < cvsHeight) {
 			viewWidth = imgWidth;
 			viewHeight = imgHeight;
-			x1 = (cvsWidth - imgWidth) / 2;
-			y1 = (cvsHeight - imgHeight) / 2;
-			x2 = x1 + viewWidth;
-			y2 = y1 + viewHeight;
+			left = (cvsWidth - imgWidth) / 2;
+			top = (cvsHeight - imgHeight) / 2;
+			right = left + viewWidth;
+			bottom = top + viewHeight;
 		} 
 		else {
 			if (cvsRatio > imgRatio) {
 				viewWidth = cvsWidth;
 				viewHeight = (int) (viewWidth * imgRatio);
-				x1 = 0;
-				x2 = cvsWidth;
-				y1 = (cvsHeight - viewHeight) / 2;
-				y2 = y1 + viewHeight;
-				
-				viewRatio = (double)viewHeight / (double)viewWidth;
+				left = 0;
+				right = cvsWidth;
+				top = (cvsHeight - viewHeight) / 2;
+				bottom = top + viewHeight;
 			} 
 			else {
 				viewHeight = cvsHeight;
 				viewWidth = (int) (viewHeight / imgRatio);
-				y1 = 0;
-				y2 = cvsHeight;
-				x1 = (cvsWidth - viewWidth) / 2;
-				x2 = x1 + viewWidth;
-				
-				viewRatio = (double)viewHeight / (double)viewWidth;
+				top = 0;
+				bottom = cvsHeight;
+				left = (cvsWidth - viewWidth) / 2;
+				right = left + viewWidth;
 			}
 		}
+		viewRatio = (double) viewHeight / (double) imgHeight;
 	}
 	 
 	public void writeText(String string, Point p, Graphics2D g2) {
@@ -145,10 +130,10 @@ public class PhotoComponent extends JComponent implements MouseListener, MouseMo
 		g2.setColor(Color.RED);
 		int i = 0;
 		while (i < line.size() - 1) {
-			Point p1 = line.get(i);
-			Point p2 = line.get(i + 1);
-			//to do??
-			if(p1.x > x1 && p1.x < x2 && p1.y > y1 && p1.y < y2 && p2.x > x1 && p2.x < x2 && p2.y > y1 && p2.y < y2 ){
+			Point p1 = logicToPhysicPoint(line.get(i));
+			Point p2 = logicToPhysicPoint(line.get(i + 1));
+			
+			if(p1.x > left && p1.x < right && p1.y > top && p1.y < bottom && p2.x > left && p2.x < right && p2.y > top && p2.y < bottom ){
 				g2.drawLine(p1.x, p1.y, p2.x, p2.y);
 				
 			}
@@ -173,17 +158,20 @@ public class PhotoComponent extends JComponent implements MouseListener, MouseMo
 	}
 
 	public void mousePressed(MouseEvent e) {
+		Point physicPoint = e.getPoint();
+		Point viewPoint = physicToLogicPoint(physicPoint);
+		
 		if (image != null){
 		// System.out.println("Pressed");
 			if (isFlipped == true){
 				currentLineInBack = new ArrayList<Point>();
 				linesInBack.add(currentLineInBack);
-				currentLineInBack.add(e.getPoint());
+				currentLineInBack.add(viewPoint);
 			}
 			else {
 				currentLineInFront = new ArrayList<Point>();
 				linesInFront.add(currentLineInFront);
-				currentLineInFront.add(e.getPoint());
+				currentLineInFront.add(viewPoint);
 			}
 			repaint();
 		}
@@ -194,13 +182,15 @@ public class PhotoComponent extends JComponent implements MouseListener, MouseMo
 	}
 
 	public void mouseDragged(MouseEvent e) {
-		//statusMouse = 2;
+		Point physicPoint = e.getPoint();
+		Point viewPoint = physicToLogicPoint(physicPoint);
+
 		if (image != null){
 			if (isFlipped == true){
-				currentLineInBack.add(e.getPoint());
+				currentLineInBack.add(viewPoint);
 			}
 			else{
-				currentLineInFront.add(e.getPoint());
+				currentLineInFront.add(viewPoint);
 			}
 			repaint();
 		}
@@ -224,7 +214,22 @@ public class PhotoComponent extends JComponent implements MouseListener, MouseMo
 
 	public void setImage(BufferedImage image) {
 		this.image = image;
+		updateView();
 		repaint();
+	}
+	
+	public Point physicToLogicPoint(Point p){
+		int logicX = (int) ((p.x - left) / viewRatio);
+		int logicY = (int) ((p.y - top) / viewRatio);
+		Point logicPoint = new Point(logicX, logicY);
+		return logicPoint;
+	}
+	
+	public Point logicToPhysicPoint(Point p){
+		int physicX = (int) (p.x * viewRatio) + left;
+		int physicY = (int) (p.y * viewRatio) + top;
+		Point physicPoint = new Point(physicX, physicY);
+		return physicPoint;
 	}
 
 }
