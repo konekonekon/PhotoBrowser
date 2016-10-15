@@ -11,6 +11,7 @@ import javax.swing.*;
 
 public class PhotoComponent extends JComponent implements KeyListener, MouseListener, MouseMotionListener {
 
+	private final static String placeholder = "Insert text";
 	private ArrayList<Point> currentLine;
 	private ArrayList<ArrayList<Point>> linesInFront;
 	private ArrayList<ArrayList<Point>> linesInBack;
@@ -20,8 +21,6 @@ public class PhotoComponent extends JComponent implements KeyListener, MouseList
 	private int left, top, right, bottom;
 	private double viewRatio;
 	private Text currentText;
-	private String currentStr;
-	private Point p;
 	private ArrayList<Text> textsInFront;
 	private ArrayList<Text> textsInBack;
 	
@@ -41,8 +40,6 @@ public class PhotoComponent extends JComponent implements KeyListener, MouseList
 		bottom = 0;
 		viewRatio = 1;
 		this.setFocusable(true);
-		currentStr = new String();
-		p = new Point();
 		textsInFront = new ArrayList<Text>();
 		textsInBack = new ArrayList<Text>();
 	}
@@ -59,10 +56,6 @@ public class PhotoComponent extends JComponent implements KeyListener, MouseList
 	    
 		g2.setColor(Color.gray);
 		g2.fillRect(0, 0, getWidth(), getHeight());
-
-		/*g2.setColor(Color.red);
-		for (Text aText : textsInFront)
-			g2.drawString(aText.text, aText.p.x, aText.p.y);*/
 		
 		if (image != null){
 
@@ -78,8 +71,8 @@ public class PhotoComponent extends JComponent implements KeyListener, MouseList
 				for (ArrayList<Point> line : linesInFront)
 					this.drawStroke(line, g2);
 				
-				for (Text aText : textsInFront)
-					this.writeText(aText, g2);
+				this.writeText(currentText, g2);
+				
 			}
 			if (isFlipped == true){
 				g2.setColor(Color.WHITE);
@@ -88,10 +81,9 @@ public class PhotoComponent extends JComponent implements KeyListener, MouseList
 				for (ArrayList<Point> line : linesInBack)
 					this.drawStroke(line, g2);
 				
-				for (Text aText : textsInBack)
-					this.writeText(aText, g2);
-			}
+				this.writeText(currentText, g2);
 			
+			}
 		}
 	}
 
@@ -148,62 +140,40 @@ public class PhotoComponent extends JComponent implements KeyListener, MouseList
 		}
 	}
 	
-	public void writeText(Text aText, Graphics2D g2) {
-		g2.setColor(Color.red);
-		g2.drawString(aText.text, aText.p.x, aText.p.y);
+	public void writeText(Text currentT, Graphics2D g2) {
+		if (isFlipped == true) {
+			for (Text aText : textsInBack)
+				g2.drawString(aText.text, aText.p.x, aText.p.y);
+		} else {
+			for (Text aText : textsInFront)
+				g2.drawString(aText.text, aText.p.x, aText.p.y);
+		}
+
+		if (currentText != null) {
+			g2.setColor(Color.red);
+			if (currentText.text == "") {
+				g2.drawString(placeholder, currentText.p.x, currentText.p.y);
+			}
+		}
 	}
 
 	public void mouseClicked(MouseEvent e) {
-		if (e.getClickCount() == 2 && image != null){
-			if (isFlipped == true && textsInBack != null){
-				Text t = textsInBack.get(textsInBack.size()-1);
-				if (t.text.charAt(currentStr.length()-1) == '|'){
-					textsInBack.remove(textsInBack.size()-1);
-					
-				}
+		if (image != null){
+			if (e.getClickCount() == 2){
+				isFlipped = !isFlipped;
+				currentText = null;
 			}
-			if (isFlipped == false && textsInFront != null) {
-				Text t = textsInFront.get(textsInFront.size()-1);
-				if (t.text.charAt(currentStr.length()-1) == '|'){
-					textsInFront.remove(textsInFront.size()-1);
-					
-				}
-			}
-			
-			isFlipped = !isFlipped;
-		}
-		if (e.getClickCount() == 1 && image != null){
-			this.requestFocusInWindow();
-			
-				p = e.getPoint();
-				currentStr = "Text";
-		 		
+			if (e.getClickCount() == 1){
+				this.requestFocusInWindow();
+				currentText = new Text("", e.getPoint());
 				if (isFlipped == true){
-					if (textsInBack.size() > 0){
-				
-						Text t = textsInBack.get(textsInBack.size()-1);
-						if (t.text.charAt(currentStr.length()-1) == '|'){
-							textsInBack.remove(textsInBack.size()-1);
-							
-						}
-					}
-					textsInBack.add(new Text(currentStr, p));
+		 			textsInBack.add(currentText);
 				}
-				if (isFlipped == false){
-					if (textsInFront.size() > 0) {
-						Text t = textsInFront.get(textsInFront.size()-1);
-						
-						if (t.text.charAt(currentStr.length()-1) == '|'){
-							textsInFront.remove(textsInFront.size()-1);
-							
-						}
-					//textsInFront.add(new Text(currentStr, p));
-					currentText = new Text(currentStr, p);
-					textsInFront.add(currentText);
-					}
+				else {
+		 			textsInFront.add(currentText);
 				}
+			}
 		}
-		
 		repaint();
 	}
 
@@ -249,33 +219,17 @@ public class PhotoComponent extends JComponent implements KeyListener, MouseList
 
 	public void mouseMoved(MouseEvent e) {}
 	
-
 	public void keyPressed(KeyEvent e) {}
 
 	public void keyReleased(KeyEvent e) {}
 
 	public void keyTyped(KeyEvent e) {
-		if (image != null){
-			if (currentStr.charAt(currentStr.length()-1)=='|') {
-				currentStr = currentStr.substring(0, currentStr.length()-1);
-			}
-			currentStr += e.getKeyChar();
-			
-			/*if (isFlipped == true){
-				Text t = textsInBack.get(textsInBack.size()-1);
-				t.text = currentStr;
-			}
-			else {
-				Text t = textsInFront.get(textsInFront.size()-1);
-				t.text = currentStr;
-			}*/
-			
+		if (currentText != null){
 			currentText.text += e.getKeyChar();
+			repaint();
 		}
-		repaint();
 	}
 	
-
 	public Image getImage() {
 		return image;
 	}
