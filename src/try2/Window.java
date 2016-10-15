@@ -28,6 +28,8 @@ public class Window extends JFrame {
 		int preferredY = (screenHeight - preferredHeight) /2;
 		this.setLocation(preferredX, preferredY);
 		this.setMaximizedBounds(new Rectangle(screenWidth, screenHeight));
+		
+		//this.setPreferredSize(new Dimension(600,600));
 		this.setResizable(true);
 		this.setLayout(new BorderLayout());
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

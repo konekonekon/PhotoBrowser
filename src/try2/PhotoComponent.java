@@ -2,15 +2,16 @@ package try2;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.font.*;
 import java.awt.image.*;
+import java.text.*;
 import java.util.*;
 
 import javax.swing.*;
 
-public class PhotoComponent extends JComponent implements MouseListener, MouseMotionListener {
+public class PhotoComponent extends JComponent implements KeyListener, MouseListener, MouseMotionListener {
 
-	private ArrayList<Point> currentLineInFront;
-	private ArrayList<Point> currentLineInBack;
+	private ArrayList<Point> currentLine;
 	private ArrayList<ArrayList<Point>> linesInFront;
 	private ArrayList<ArrayList<Point>> linesInBack;
 	private BufferedImage image;
@@ -18,11 +19,16 @@ public class PhotoComponent extends JComponent implements MouseListener, MouseMo
 	private int viewWidth, viewHeight, imgWidth, imgHeight;
 	private int left, top, right, bottom;
 	private double viewRatio;
-
+	private String currentStr;
+	private Point p;
+	private ArrayList<Text> textsInFront;
+	private ArrayList<Text> textsInBack;
+	
 	public PhotoComponent() {
 		super();
 		addMouseListener(this);
 		addMouseMotionListener(this);
+		addKeyListener(this);
 		linesInFront = new ArrayList<ArrayList<Point>>();
 		linesInBack = new ArrayList<ArrayList<Point>>();
 		isFlipped = false;
@@ -33,6 +39,11 @@ public class PhotoComponent extends JComponent implements MouseListener, MouseMo
 		right = 0;
 		bottom = 0;
 		viewRatio = 1;
+		this.setFocusable(true);
+		currentStr = new String();
+		p = new Point();
+		textsInFront = new ArrayList<Text>();
+		textsInBack = new ArrayList<Text>();
 	}
 
 	// TODO : color, thickness for line/text
@@ -47,6 +58,10 @@ public class PhotoComponent extends JComponent implements MouseListener, MouseMo
 	    
 		g2.setColor(Color.gray);
 		g2.fillRect(0, 0, getWidth(), getHeight());
+
+		g2.setColor(Color.red);
+		for (Text aText : textsInFront)
+			g2.drawString(aText.text, aText.p.x, aText.p.y);
 		
 		if (image != null){
 
@@ -61,24 +76,24 @@ public class PhotoComponent extends JComponent implements MouseListener, MouseMo
 				
 				for (ArrayList<Point> line : linesInFront)
 					this.drawStroke(line, g2);
-				//put lines in transparent rectangle and resize it?
-				//
+				
+				/*for (String str : textsInFront)
+					this.writeText(str, g2);*/
+				
 			}
 			if (isFlipped == true){
 				g2.setColor(Color.WHITE);
 				g2.fillRect(left, top, viewWidth, viewHeight);
 				
-				
 				for (ArrayList<Point> line : linesInBack)
 					this.drawStroke(line, g2);
-			}			
-
-		// text
-		/*if (statusMouse == 1) {
-			//System.out.println("Clicked");
-			g2.drawString(str, p.x, p.y);
-			statusMouse = 0;
-		}*/
+				
+				/*g2.setColor(Color.red);
+				for (String str : textsInBack)
+					g2.drawString(str, p.x, p.y);*/
+			}
+			
+ 			
 		}
 	}
 
@@ -119,11 +134,6 @@ public class PhotoComponent extends JComponent implements MouseListener, MouseMo
 		}
 		viewRatio = (double) viewHeight / (double) imgHeight;
 	}
-	 
-	public void writeText(String string, Point p, Graphics2D g2) {
-
-		g2.drawString(string, p.x, p.y);
-	}
 
 	public void drawStroke(ArrayList<Point> line, Graphics2D g2) {
 		
@@ -135,26 +145,45 @@ public class PhotoComponent extends JComponent implements MouseListener, MouseMo
 			
 			if(p1.x > left && p1.x < right && p1.y > top && p1.y < bottom && p2.x > left && p2.x < right && p2.y > top && p2.y < bottom ){
 				g2.drawLine(p1.x, p1.y, p2.x, p2.y);
-				
 			}
 			i++;
 		}
 	}
+	
+	public void writeText(String str, Graphics2D g2) {
+		g2.setColor(Color.red);
+		
+		//Point p1 = str.get();
+		g2.drawString(str, p.x, p.y);
+	}
 
-	// TODO get what user type for "str"
 	public void mouseClicked(MouseEvent e) {
 		if (e.getClickCount() == 2){
 			isFlipped = !isFlipped;
-			repaint();
 		}
-		/*if (e.getClickCount() == 3){
-			//statusMouse = 1;		 
-
+		if (e.getClickCount() == 1){
+			/*if (image != null){
+				this.requestFocusInWindow();
+				
+		 		
+				if (isFlipped == true){
+					p = e.getPoint();
+					currentStr = "|";
+		 			textsInBack.add(currentStr);
+				}
+				else {
+					p = e.getPoint();
+					currentStr = "|";
+		 			textsInFront.add(currentStr);
+				}
+			}*/
+			this.requestFocusInWindow();
+			
 			p = e.getPoint();
-			str = "stg";
-			// System.out.println("Clicked");
-			repaint();
-		}*/
+			currentStr = "|";
+ 			textsInFront.add(new Text(currentStr, p));
+		}
+		repaint();
 	}
 
 	public void mousePressed(MouseEvent e) {
@@ -162,24 +191,21 @@ public class PhotoComponent extends JComponent implements MouseListener, MouseMo
 		Point viewPoint = physicToLogicPoint(physicPoint);
 		
 		if (image != null){
-		// System.out.println("Pressed");
 			if (isFlipped == true){
-				currentLineInBack = new ArrayList<Point>();
-				linesInBack.add(currentLineInBack);
-				currentLineInBack.add(viewPoint);
+				currentLine = new ArrayList<Point>();
+				linesInBack.add(currentLine);
+				currentLine.add(viewPoint);
 			}
 			else {
-				currentLineInFront = new ArrayList<Point>();
-				linesInFront.add(currentLineInFront);
-				currentLineInFront.add(viewPoint);
+				currentLine = new ArrayList<Point>();
+				linesInFront.add(currentLine);
+				currentLine.add(viewPoint);
 			}
 			repaint();
 		}
 	}
 
-	public void mouseReleased(MouseEvent e) {
-
-	}
+	public void mouseReleased(MouseEvent e) {}
 
 	public void mouseDragged(MouseEvent e) {
 		Point physicPoint = e.getPoint();
@@ -187,26 +213,55 @@ public class PhotoComponent extends JComponent implements MouseListener, MouseMo
 
 		if (image != null){
 			if (isFlipped == true){
-				currentLineInBack.add(viewPoint);
+				currentLine.add(viewPoint);
 			}
 			else{
-				currentLineInFront.add(viewPoint);
+				currentLine.add(viewPoint);
 			}
 			repaint();
 		}
 	}
 
-	public void mouseEntered(MouseEvent e) {
+	public void mouseEntered(MouseEvent e) {}
 
+	public void mouseExited(MouseEvent e) {}
+
+	public void mouseMoved(MouseEvent e) {}
+	
+
+	public void keyPressed(KeyEvent e) {}
+
+	public void keyReleased(KeyEvent e) {}
+
+	public void keyTyped(KeyEvent e) {
+		/*if (image != null){
+			if (isFlipped == true){
+				
+				if (currentStr != null && currentStr.charAt(currentStr.length()-1)=='|') {
+					currentStr = currentStr.substring(0, currentStr.length()-1);
+			    }
+				currentStr += e.getKeyChar();
+				textsInBack.add(currentStr);
+			}
+			else {
+				
+				if (currentStr != null && currentStr.charAt(currentStr.length()-1)=='|') {
+					currentStr = currentStr.substring(0, currentStr.length()-1);
+			    }
+				currentStr += e.getKeyChar();
+				textsInFront.add(currentStr);
+			}
+		}*/
+		
+		if (currentStr.charAt(currentStr.length()-1)=='|') {
+			currentStr = currentStr.substring(0, currentStr.length()-1);
+	    }
+		currentStr += e.getKeyChar();
+		Text t = textsInFront.get(textsInFront.size()-1);
+		t.text = currentStr;
+		repaint();
 	}
-
-	public void mouseExited(MouseEvent e) {
-
-	}
-
-	public void mouseMoved(MouseEvent e) {
-
-	}
+	
 
 	public Image getImage() {
 		return image;
