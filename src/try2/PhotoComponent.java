@@ -19,6 +19,7 @@ public class PhotoComponent extends JComponent implements KeyListener, MouseList
 	private int viewWidth, viewHeight, imgWidth, imgHeight;
 	private int left, top, right, bottom;
 	private double viewRatio;
+	private Text currentText;
 	private String currentStr;
 	private Point p;
 	private ArrayList<Text> textsInFront;
@@ -59,9 +60,9 @@ public class PhotoComponent extends JComponent implements KeyListener, MouseList
 		g2.setColor(Color.gray);
 		g2.fillRect(0, 0, getWidth(), getHeight());
 
-		g2.setColor(Color.red);
+		/*g2.setColor(Color.red);
 		for (Text aText : textsInFront)
-			g2.drawString(aText.text, aText.p.x, aText.p.y);
+			g2.drawString(aText.text, aText.p.x, aText.p.y);*/
 		
 		if (image != null){
 
@@ -77,9 +78,8 @@ public class PhotoComponent extends JComponent implements KeyListener, MouseList
 				for (ArrayList<Point> line : linesInFront)
 					this.drawStroke(line, g2);
 				
-				/*for (String str : textsInFront)
-					this.writeText(str, g2);*/
-				
+				for (Text aText : textsInFront)
+					this.writeText(aText, g2);
 			}
 			if (isFlipped == true){
 				g2.setColor(Color.WHITE);
@@ -88,12 +88,10 @@ public class PhotoComponent extends JComponent implements KeyListener, MouseList
 				for (ArrayList<Point> line : linesInBack)
 					this.drawStroke(line, g2);
 				
-				/*g2.setColor(Color.red);
-				for (String str : textsInBack)
-					g2.drawString(str, p.x, p.y);*/
+				for (Text aText : textsInBack)
+					this.writeText(aText, g2);
 			}
 			
- 			
 		}
 	}
 
@@ -150,39 +148,62 @@ public class PhotoComponent extends JComponent implements KeyListener, MouseList
 		}
 	}
 	
-	public void writeText(String str, Graphics2D g2) {
+	public void writeText(Text aText, Graphics2D g2) {
 		g2.setColor(Color.red);
-		
-		//Point p1 = str.get();
-		g2.drawString(str, p.x, p.y);
+		g2.drawString(aText.text, aText.p.x, aText.p.y);
 	}
 
 	public void mouseClicked(MouseEvent e) {
-		if (e.getClickCount() == 2){
+		if (e.getClickCount() == 2 && image != null){
+			if (isFlipped == true && textsInBack != null){
+				Text t = textsInBack.get(textsInBack.size()-1);
+				if (t.text.charAt(currentStr.length()-1) == '|'){
+					textsInBack.remove(textsInBack.size()-1);
+					
+				}
+			}
+			if (isFlipped == false && textsInFront != null) {
+				Text t = textsInFront.get(textsInFront.size()-1);
+				if (t.text.charAt(currentStr.length()-1) == '|'){
+					textsInFront.remove(textsInFront.size()-1);
+					
+				}
+			}
+			
 			isFlipped = !isFlipped;
 		}
-		if (e.getClickCount() == 1){
-			/*if (image != null){
-				this.requestFocusInWindow();
-				
-		 		
-				if (isFlipped == true){
-					p = e.getPoint();
-					currentStr = "|";
-		 			textsInBack.add(currentStr);
-				}
-				else {
-					p = e.getPoint();
-					currentStr = "|";
-		 			textsInFront.add(currentStr);
-				}
-			}*/
+		if (e.getClickCount() == 1 && image != null){
 			this.requestFocusInWindow();
 			
-			p = e.getPoint();
-			currentStr = "|";
- 			textsInFront.add(new Text(currentStr, p));
+				p = e.getPoint();
+				currentStr = "Text";
+		 		
+				if (isFlipped == true){
+					if (textsInBack.size() > 0){
+				
+						Text t = textsInBack.get(textsInBack.size()-1);
+						if (t.text.charAt(currentStr.length()-1) == '|'){
+							textsInBack.remove(textsInBack.size()-1);
+							
+						}
+					}
+					textsInBack.add(new Text(currentStr, p));
+				}
+				if (isFlipped == false){
+					if (textsInFront.size() > 0) {
+						Text t = textsInFront.get(textsInFront.size()-1);
+						
+						if (t.text.charAt(currentStr.length()-1) == '|'){
+							textsInFront.remove(textsInFront.size()-1);
+							
+						}
+					//textsInFront.add(new Text(currentStr, p));
+					currentText = new Text(currentStr, p);
+					textsInFront.add(currentText);
+					}
+				}
 		}
+		
 		repaint();
 	}
 
@@ -234,31 +255,23 @@ public class PhotoComponent extends JComponent implements KeyListener, MouseList
 	public void keyReleased(KeyEvent e) {}
 
 	public void keyTyped(KeyEvent e) {
-		/*if (image != null){
-			if (isFlipped == true){
-				
-				if (currentStr != null && currentStr.charAt(currentStr.length()-1)=='|') {
-					currentStr = currentStr.substring(0, currentStr.length()-1);
-			    }
-				currentStr += e.getKeyChar();
-				textsInBack.add(currentStr);
+		if (image != null){
+			if (currentStr.charAt(currentStr.length()-1)=='|') {
+				currentStr = currentStr.substring(0, currentStr.length()-1);
+			}
+			currentStr += e.getKeyChar();
+			
+			/*if (isFlipped == true){
+				Text t = textsInBack.get(textsInBack.size()-1);
+				t.text = currentStr;
 			}
 			else {
-				
-				if (currentStr != null && currentStr.charAt(currentStr.length()-1)=='|') {
-					currentStr = currentStr.substring(0, currentStr.length()-1);
-			    }
-				currentStr += e.getKeyChar();
-				textsInFront.add(currentStr);
-			}
-		}*/
-		
-		if (currentStr.charAt(currentStr.length()-1)=='|') {
-			currentStr = currentStr.substring(0, currentStr.length()-1);
-	    }
-		currentStr += e.getKeyChar();
-		Text t = textsInFront.get(textsInFront.size()-1);
-		t.text = currentStr;
+				Text t = textsInFront.get(textsInFront.size()-1);
+				t.text = currentStr;
+			}*/
+			
+			currentText.text += e.getKeyChar();
+		}
 		repaint();
 	}
 	
