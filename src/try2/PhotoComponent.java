@@ -47,42 +47,37 @@ public class PhotoComponent extends JComponent implements KeyListener, MouseList
 	// TODO : color, thickness for line/text
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		Graphics2D g2 = (Graphics2D) g;
+		Graphics2D g2d = (Graphics2D) g;
 		
-		RenderingHints rh = g2.getRenderingHints ();
+		RenderingHints rh = g2d.getRenderingHints ();
 	    rh.put (RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 	    rh.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-	    g2.setRenderingHints (rh);
+	    g2d.setRenderingHints (rh);
 	    
-		g2.setColor(Color.gray);
-		g2.fillRect(0, 0, getWidth(), getHeight());
+		g2d.setColor(Color.gray);
+		g2d.fillRect(0, 0, getWidth(), getHeight());		
+		
 		
 		if (image != null){
 
 			this.updateView();
 			
 			if (isFlipped == false){
-				//imgWidth = image.getWidth();
-				//imgHeight = image.getHeight();
-				
-				g2.drawImage(image, left, top, right, bottom, 0, 0, imgWidth, imgHeight, null);
-				//g2.drawImage(image, null, 0, 0);
+				g2d.drawImage(image, left, top, right, bottom, 0, 0, imgWidth, imgHeight, null);
 				
 				for (ArrayList<Point> line : linesInFront)
-					this.drawStroke(line, g2);
+					this.drawStroke(line, g2d);
 				
-				this.writeText(currentText, g2);
-				
+				this.writeText(g2d);
 			}
 			if (isFlipped == true){
-				g2.setColor(Color.WHITE);
-				g2.fillRect(left, top, viewWidth, viewHeight);
+				g2d.setColor(Color.WHITE);
+				g2d.fillRect(left, top, viewWidth, viewHeight);
 				
 				for (ArrayList<Point> line : linesInBack)
-					this.drawStroke(line, g2);
+					this.drawStroke(line, g2d);
 				
-				this.writeText(currentText, g2);
-			
+				this.writeText(g2d);
 			}
 		}
 	}
@@ -125,40 +120,65 @@ public class PhotoComponent extends JComponent implements KeyListener, MouseList
 		viewRatio = (double) viewHeight / (double) imgHeight;
 	}
 
-	public void drawStroke(ArrayList<Point> line, Graphics2D g2) {
+	public void drawStroke(ArrayList<Point> line, Graphics2D g2d) {
 		
-		g2.setColor(Color.RED);
+		g2d.setColor(Color.RED);
 		int i = 0;
 		while (i < line.size() - 1) {
 			Point p1 = logicToPhysicPoint(line.get(i));
 			Point p2 = logicToPhysicPoint(line.get(i + 1));
 			
-			if(p1.x > left && p1.x < right && p1.y > top && p1.y < bottom && p2.x > left && p2.x < right && p2.y > top && p2.y < bottom ){
-				g2.drawLine(p1.x, p1.y, p2.x, p2.y);
+			if(p1.x > left && p1.x < right && p1.y > top && p1.y < bottom){
+				if (p2.x > left && p2.x < right && p2.y > top && p2.y < bottom ){
+					g2d.drawLine(p1.x, p1.y, p2.x, p2.y);
+				}	
 			}
 			i++;
 		}
 	}
 	
-	public void writeText(Text currentT, Graphics2D g2) {
-		if (isFlipped == true) {
-			for (Text aText : textsInBack)
-				g2.drawString(aText.text, aText.p.x, aText.p.y);
-		} else {
-			for (Text aText : textsInFront)
-				g2.drawString(aText.text, aText.p.x, aText.p.y);
-		}
+	public void writeText(Graphics2D g2d) {
+		ArrayList<Text> texts;
+		if (isFlipped == true)
+			texts = textsInBack;
+		else
+			texts = textsInFront;
+		
+		for (Text aText : texts) {
+			if (aText.text.length() > 0) {
+				AttributedString attributedString = new AttributedString(aText.text);
+				attributedString.addAttribute(TextAttribute.FONT, (Font) UIManager.get("Label.font"));
+				Color color = (Color) UIManager.get("Label.foreground");
+				attributedString.addAttribute(TextAttribute.FOREGROUND, color);
+				
+				float drawPosY = (float) aText.p.y;
+				float breakWidth = (float) (viewWidth - (aText.p.x - left));
 
+				AttributedCharacterIterator paragraph = attributedString.getIterator();
+				FontRenderContext frc = g2d.getFontRenderContext();
+				LineBreakMeasurer measurer = new LineBreakMeasurer(paragraph, frc);
+
+				while (measurer.getPosition() < paragraph.getEndIndex() && drawPosY < bottom) {
+					TextLayout textLayout = measurer.nextLayout(breakWidth);
+					float drawPosX = textLayout.isLeftToRight() ? aText.p.x
+							: breakWidth - textLayout.getAdvance();
+					textLayout.draw(g2d, drawPosX, drawPosY);
+					drawPosY += textLayout.getAscent();
+					drawPosY += textLayout.getDescent() + textLayout.getLeading();
+				}
+			}
+		}
 		if (currentText != null) {
-			g2.setColor(Color.red);
+			g2d.setColor(Color.red);
 			if (currentText.text == "") {
-				g2.drawString(placeholder, currentText.p.x, currentText.p.y);
+				g2d.drawString(placeholder, currentText.p.x, currentText.p.y);
 			}
 		}
 	}
 
 	public void mouseClicked(MouseEvent e) {
-		if (image != null){
+		Point p = e.getPoint();
+		if (image != null && p.x > left && p.y > top && p.x < right && p.y < bottom){
 			if (e.getClickCount() == 2){
 				isFlipped = !isFlipped;
 				currentText = null;
