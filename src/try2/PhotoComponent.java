@@ -145,54 +145,65 @@ public class PhotoComponent extends JComponent implements KeyListener, MouseList
 			texts = textsInFront;
 		
 		for (Text aText : texts) {
+			Point p = logicToPhysicPoint(aText.p);
 			if (aText.text.length() > 0) {
 				AttributedString attributedString = new AttributedString(aText.text);
 				attributedString.addAttribute(TextAttribute.FONT, (Font) UIManager.get("Label.font"));
 				Color color = (Color) UIManager.get("Label.foreground");
 				attributedString.addAttribute(TextAttribute.FOREGROUND, color);
 				
-				float drawPosY = (float) aText.p.y;
-				float breakWidth = (float) (viewWidth - (aText.p.x - left));
-
+				float drawPosY = (float) p.y;
+				float breakWidth = (float) (right - p.x);
+				
 				AttributedCharacterIterator paragraph = attributedString.getIterator();
 				FontRenderContext frc = g2d.getFontRenderContext();
 				LineBreakMeasurer measurer = new LineBreakMeasurer(paragraph, frc);
-
-				while (measurer.getPosition() < paragraph.getEndIndex() && drawPosY < bottom) {
-					TextLayout textLayout = measurer.nextLayout(breakWidth);
-					float drawPosX = textLayout.isLeftToRight() ? aText.p.x
-							: breakWidth - textLayout.getAdvance();
-					textLayout.draw(g2d, drawPosX, drawPosY);
-					drawPosY += textLayout.getAscent();
-					drawPosY += textLayout.getDescent() + textLayout.getLeading();
+					if (breakWidth > 0){
+						while (measurer.getPosition() < paragraph.getEndIndex() && drawPosY < bottom) {
+						
+							TextLayout textLayout = measurer.nextLayout(breakWidth);
+							float drawPosX = textLayout.isLeftToRight() ? p.x
+									: breakWidth - textLayout.getAdvance();
+							textLayout.draw(g2d, drawPosX, drawPosY);
+							drawPosY += textLayout.getAscent();
+							drawPosY += textLayout.getDescent() + textLayout.getLeading();
+						}
+					}
 				}
-			}
+				
 		}
 		if (currentText != null) {
+			Point p2 = logicToPhysicPoint(currentText.p);
 			g2d.setColor(Color.red);
 			if (currentText.text == "") {
-				g2d.drawString(placeholder, currentText.p.x, currentText.p.y);
+				g2d.drawString(placeholder, p2.x, p2.y);
 			}
 		}
 	}
 
 	public void mouseClicked(MouseEvent e) {
-		Point p = e.getPoint();
-		if (image != null && p.x > left && p.y > top && p.x < right && p.y < bottom){
-			if (e.getClickCount() == 2){
-				isFlipped = !isFlipped;
+		Point physicPoint = e.getPoint();
+		Point viewPoint = physicToLogicPoint(physicPoint);
+
+		if (image != null) {
+			
+			if (physicPoint.x > left && physicPoint.y > top && physicPoint.x < right && physicPoint.y < bottom){
+				if (e.getClickCount() == 2) {
+					isFlipped = !isFlipped;
+					currentText = null;
+				}
+				if (e.getClickCount() == 1) {
+					this.requestFocusInWindow();
+					currentText = new Text("", viewPoint);
+					if (isFlipped == true) {
+						textsInBack.add(currentText);
+					} else {
+						textsInFront.add(currentText);
+					}
+				}
+			}
+			else
 				currentText = null;
-			}
-			if (e.getClickCount() == 1){
-				this.requestFocusInWindow();
-				currentText = new Text("", e.getPoint());
-				if (isFlipped == true){
-		 			textsInBack.add(currentText);
-				}
-				else {
-		 			textsInFront.add(currentText);
-				}
-			}
 		}
 		repaint();
 	}
