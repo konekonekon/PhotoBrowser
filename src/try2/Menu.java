@@ -1,34 +1,34 @@
 package try2;
 
-import java.awt.event.*;
 import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JScrollPane;
 
 public class Menu extends JMenuBar {
 	
 	JMenu fileMenu, viewMenu;
-	JMenuItem importMI;
+	JMenuItem importFile;
 	JMenuItem delete;
 	JMenuItem quit;
 	JRadioButtonMenuItem pv;
 	JRadioButtonMenuItem browser;
 	JRadioButtonMenuItem split;
+	//ActionPerformer ap;
 	
-	public Menu(JLabel status, PhotoComponent pc){
+	public Menu(ActionPerformer ap){
 		//File Menu
 		fileMenu = new JMenu("File");
 		this.add(fileMenu);
-		
-		MenuActionListener listener = new MenuActionListener(this, status, pc);
+		MenuActionListener listener = new MenuActionListener(this, ap);
 		
 		//File menuItems
-		importMI = new JMenuItem("Import");
-		importMI.addActionListener(listener);
-		fileMenu.add(importMI);
+		importFile = new JMenuItem("Import");
+		importFile.addActionListener(listener);
+		fileMenu.add(importFile);
 		
 		delete = new JMenuItem("Delete");
 		delete.addActionListener(listener);

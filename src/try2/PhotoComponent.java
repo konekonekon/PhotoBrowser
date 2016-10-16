@@ -26,7 +26,7 @@ public class PhotoComponent extends JComponent implements KeyListener, MouseList
 	
 	public PhotoComponent() {
 		super();
-		addMouseListener(this);
+		this.addMouseListener(this);
 		addMouseMotionListener(this);
 		addKeyListener(this);
 		linesInFront = new ArrayList<ArrayList<Point>>();
@@ -55,8 +55,7 @@ public class PhotoComponent extends JComponent implements KeyListener, MouseList
 	    g2d.setRenderingHints (rh);
 	    
 		g2d.setColor(Color.gray);
-		g2d.fillRect(0, 0, getWidth(), getHeight());		
-		
+		g2d.fillRect(0, 0, getWidth(), getHeight());
 		
 		if (image != null){
 
@@ -268,6 +267,11 @@ public class PhotoComponent extends JComponent implements KeyListener, MouseList
 	public void setImage(BufferedImage image) {
 		this.image = image;
 		updateView();
+		repaint();
+	}
+	
+	public void deleteImage() {
+		
 		repaint();
 	}
 	
