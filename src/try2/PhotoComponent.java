@@ -6,7 +6,6 @@ import java.awt.font.*;
 import java.awt.image.*;
 import java.text.*;
 import java.util.*;
-
 import javax.swing.*;
 
 public class PhotoComponent extends JComponent implements KeyListener, MouseListener, MouseMotionListener {
@@ -32,12 +31,8 @@ public class PhotoComponent extends JComponent implements KeyListener, MouseList
 		linesInFront = new ArrayList<ArrayList<Point>>();
 		linesInBack = new ArrayList<ArrayList<Point>>();
 		isFlipped = false;
-		viewWidth = 0;
-		viewHeight = 0;
-		left = 0;
-		top = 0;
-		right = 0;
-		bottom = 0;
+		viewWidth = 0; viewHeight = 0;
+		left = 0; top = 0; right = 0; bottom = 0;
 		viewRatio = 1;
 		this.setFocusable(true);
 		textsInFront = new ArrayList<Text>();
@@ -49,24 +44,27 @@ public class PhotoComponent extends JComponent implements KeyListener, MouseList
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
 		
+		/*** ANTI ALIASING ***/
 		RenderingHints rh = g2d.getRenderingHints ();
 	    rh.put (RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 	    rh.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 	    g2d.setRenderingHints (rh);
 	    
+	    /*** Paint background ***/
 		g2d.setColor(Color.gray);
 		g2d.fillRect(0, 0, getWidth(), getHeight());
 		
+		/*** Draw a photo. Draw strokes & write texts ***/
 		if (image != null){
-
 			this.updateView();
 			
 			if (isFlipped == false){
+				/* Draw photo */
 				g2d.drawImage(image, left, top, right, bottom, 0, 0, imgWidth, imgHeight, null);
-				
+				/* Draw stroke */
 				for (ArrayList<Point> line : linesInFront)
 					this.drawStroke(line, g2d);
-				
+				/* Write texts */
 				this.writeText(g2d);
 			}
 			if (isFlipped == true){
@@ -81,6 +79,7 @@ public class PhotoComponent extends JComponent implements KeyListener, MouseList
 		}
 	}
 
+	/*** Calculate view elements ***/
 	private void updateView() {
 		imgWidth = image.getWidth();
 		imgHeight = image.getHeight();
@@ -120,7 +119,6 @@ public class PhotoComponent extends JComponent implements KeyListener, MouseList
 	}
 
 	public void drawStroke(ArrayList<Point> line, Graphics2D g2d) {
-		
 		g2d.setColor(Color.RED);
 		int i = 0;
 		while (i < line.size() - 1) {
@@ -170,7 +168,7 @@ public class PhotoComponent extends JComponent implements KeyListener, MouseList
 					}
 				}
 				
-		}
+		} //Simple one click
 		if (currentText != null) {
 			Point p2 = logicToPhysicPoint(currentText.p);
 			g2d.setColor(Color.red);
@@ -185,7 +183,6 @@ public class PhotoComponent extends JComponent implements KeyListener, MouseList
 		Point viewPoint = physicToLogicPoint(physicPoint);
 
 		if (image != null) {
-			
 			if (physicPoint.x > left && physicPoint.y > top && physicPoint.x < right && physicPoint.y < bottom){
 				if (e.getClickCount() == 2) {
 					isFlipped = !isFlipped;
@@ -193,6 +190,7 @@ public class PhotoComponent extends JComponent implements KeyListener, MouseList
 				}
 				if (e.getClickCount() == 1) {
 					this.requestFocusInWindow();
+					/* Create new text */
 					currentText = new Text("", viewPoint);
 					if (isFlipped == true) {
 						textsInBack.add(currentText);
@@ -210,6 +208,7 @@ public class PhotoComponent extends JComponent implements KeyListener, MouseList
 	public void mousePressed(MouseEvent e) {
 		Point physicPoint = e.getPoint();
 		Point viewPoint = physicToLogicPoint(physicPoint);
+		currentText = null;
 		
 		if (image != null){
 			if (isFlipped == true){
@@ -270,11 +269,18 @@ public class PhotoComponent extends JComponent implements KeyListener, MouseList
 		repaint();
 	}
 	
-	public void deleteImage() {
-		
-		repaint();
+	public void initializeComponent(){
+		linesInFront = new ArrayList<ArrayList<Point>>();
+		linesInBack = new ArrayList<ArrayList<Point>>();
+		isFlipped = false;
+		viewWidth = 0; viewHeight = 0;
+		left = 0; top = 0; right = 0; bottom = 0;
+		viewRatio = 1;
+		textsInFront = new ArrayList<Text>();
+		textsInBack = new ArrayList<Text>();
 	}
 	
+	/*** Scale point: move & resize ***/
 	public Point physicToLogicPoint(Point p){
 		int logicX = (int) ((p.x - left) / viewRatio);
 		int logicY = (int) ((p.y - top) / viewRatio);

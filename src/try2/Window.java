@@ -4,7 +4,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -12,19 +11,19 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-public class Window extends JFrame implements ActionPerformer {
+public class Window extends JFrame implements Performer {
 	
 	private Menu menu;
 	private ToolBar toolBar;
 	private JLabel label;
-	private PhotoComponent pc;
-	private JScrollPane sp;
+	private PhotoComponent photoComponent;
+	private JScrollPane scrollPane;
 	private File file;
-	
 	
 	public Window(){
 		this.setTitle("Photo Browser");
 		this.setMinimumSize(new Dimension(220,150));
+		/** Center this window in screen **/
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int screenWidth = (int)screenSize.getWidth();
 		int screenHeight = (int)screenSize.getHeight();
@@ -34,35 +33,33 @@ public class Window extends JFrame implements ActionPerformer {
 		int preferredX = (screenWidth - preferredWidth) /2;
 		int preferredY = (screenHeight - preferredHeight) /2;
 		this.setLocation(preferredX, preferredY);
+		/** Set maximum size to screen size **/
 		this.setMaximizedBounds(new Rectangle(screenWidth, screenHeight));
 		this.setResizable(true);
 		this.setLayout(new BorderLayout());
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
 
-		label = new JLabel();
-		label.setText("Status bar");
-		pc = new PhotoComponent();
-		toolBar = new ToolBar(label);
-		sp = new JScrollPane(pc);
-		sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		sp.getVerticalScrollBar().setUnitIncrement(10);
-		sp.getHorizontalScrollBar().setUnitIncrement(10);
 		menu = new Menu(this);
+		label = new JLabel();
+		toolBar = new ToolBar(label);
+		photoComponent = new PhotoComponent();
+		scrollPane = new JScrollPane(photoComponent);
+		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane.getVerticalScrollBar().setUnitIncrement(10);
+		scrollPane.getHorizontalScrollBar().setUnitIncrement(10);
 		
 		this.setJMenuBar(menu);	
 		this.add(toolBar, BorderLayout.NORTH);
 		this.add(label, BorderLayout.SOUTH);
-		//this.add(pc, BorderLayout.CENTER);
-		//this.add(sp, BorderLayout.CENTER);
 
 		this.pack();
 		this.setVisible(true);
 	}
 
+	/*** Performer section, called from class Menu ***/
 	public void importFile() {
-		label.setText("You click 'Import'.");
+		label.setText("Clicked 'Import'.");
 		
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 			"Images", "jpg", "jpeg", "png", "gif", "JPG", "JPEG", "PNG", "GIF");
@@ -74,13 +71,14 @@ public class Window extends JFrame implements ActionPerformer {
 		int returnVal = fileChooser.showDialog(parent, "Choose a file");
 		if(returnVal == JFileChooser.APPROVE_OPTION){
 			file = fileChooser.getSelectedFile();
-			label.setText("You imported " + file);
+			label.setText("Imported " + file);
 			String path = file.getAbsolutePath();
 			
 			try {
+				this.photoComponent.initializeComponent();
 				BufferedImage img = ImageIO.read(new File(path));
-				this.add(sp, BorderLayout.CENTER);
-				this.pc.setImage(img);
+				this.add(scrollPane, BorderLayout.CENTER);
+				this.photoComponent.setImage(img);
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -88,14 +86,24 @@ public class Window extends JFrame implements ActionPerformer {
 	}
 
 	public void delete() {
-		this.pc.deleteImage();
-		label.setText("You delete " + file);
+		this.remove(scrollPane);
+		label.setText("Deleted " + file);
 	}
 
 	public void quit() {
 		System.exit(0);
 	}
-	
-	
+
+	public void photoViewer() {
+		label.setText("Chose 'PhotoViewer mode'.");
+	}
+
+	public void browser() {
+		label.setText("Choose 'Browser mode'.");
+	}
+
+	public void split() {
+		label.setText("Choose 'Split mode'.");
+	}
 	
 }
