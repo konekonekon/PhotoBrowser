@@ -23,7 +23,7 @@ public class Window extends JFrame implements Performer {
 	public Window(){
 		this.setTitle("Photo Browser");
 		this.setMinimumSize(new Dimension(220,150));
-		/** Center this window in screen **/
+		/* Center this window in screen */
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int screenWidth = (int)screenSize.getWidth();
 		int screenHeight = (int)screenSize.getHeight();
@@ -33,7 +33,7 @@ public class Window extends JFrame implements Performer {
 		int preferredX = (screenWidth - preferredWidth) /2;
 		int preferredY = (screenHeight - preferredHeight) /2;
 		this.setLocation(preferredX, preferredY);
-		/** Set maximum size to screen size **/
+		/* Set maximum size to screen size */
 		this.setMaximizedBounds(new Rectangle(screenWidth, screenHeight));
 		this.setResizable(true);
 		this.setLayout(new BorderLayout());
@@ -57,7 +57,7 @@ public class Window extends JFrame implements Performer {
 		this.setVisible(true);
 	}
 
-	/*** Performer section, called from class Menu ***/
+	/* Performer section, called from class Menu */
 	public void importFile() {
 		label.setText("Clicked 'Import'.");
 		
@@ -65,7 +65,7 @@ public class Window extends JFrame implements Performer {
 			"Images", "jpg", "jpeg", "png", "gif", "JPG", "JPEG", "PNG", "GIF");
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.addChoosableFileFilter(filter);
-		fileChooser.setMultiSelectionEnabled(true);
+		//fileChooser.setMultiSelectionEnabled(true);
 		fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
 		Component parent = null;
 		int returnVal = fileChooser.showDialog(parent, "Choose a file");

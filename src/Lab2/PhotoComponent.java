@@ -25,7 +25,7 @@ public class PhotoComponent extends JComponent implements KeyListener, MouseList
 	
 	public PhotoComponent() {
 		super();
-		this.addMouseListener(this);
+		addMouseListener(this);
 		addMouseMotionListener(this);
 		addKeyListener(this);
 		linesInFront = new ArrayList<ArrayList<Point>>();

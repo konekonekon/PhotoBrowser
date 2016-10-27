@@ -8,7 +8,7 @@ import javax.swing.JToolBar;
 public class ToolBar extends JToolBar implements ActionListener {
 
 	private JToggleButton family, vacation, school;
-	private JLabel status;
+	private JLabel status; //change to Performer
 	
 	public ToolBar(JLabel status){
 		this.status = status;
