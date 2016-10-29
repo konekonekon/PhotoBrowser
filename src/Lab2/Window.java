@@ -58,6 +58,7 @@ public class Window extends JFrame implements Performer {
 	}
 
 	/* Performer section, called from class Menu */
+	@Override
 	public void importFile() {
 		label.setText("Clicked 'Import'.");
 		
@@ -84,26 +85,38 @@ public class Window extends JFrame implements Performer {
 			}
 		}
 	}
-
+	@Override
 	public void delete() {
 		this.remove(scrollPane);
 		label.setText("Deleted " + file);
 	}
-
+	@Override
 	public void quit() {
 		System.exit(0);
 	}
-
+	@Override
 	public void photoViewer() {
 		label.setText("Chose 'PhotoViewer mode'.");
+		
+		
 	}
-
+	@Override
 	public void browser() {
 		label.setText("Choose 'Browser mode'.");
 	}
-
+	@Override
 	public void split() {
 		label.setText("Choose 'Split mode'.");
+	}
+
+	@Override
+	public void undo() {
+		
+	}
+
+	@Override
+	public void redo() {
+		
 	}
 	
 }

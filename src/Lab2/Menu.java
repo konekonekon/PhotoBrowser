@@ -10,8 +10,8 @@ import javax.swing.JRadioButtonMenuItem;
 
 public class Menu extends JMenuBar implements ActionListener {
 	
-	private JMenu fileMenu, viewMenu;
-	private JMenuItem importFile, delete, quit;
+	private JMenu fileMenu, viewMenu, editMenu;
+	private JMenuItem importFile, delete, quit, undo, redo;
 	private JRadioButtonMenuItem photoViewer, browser, split;
 	private Performer performer;
 	
@@ -56,33 +56,45 @@ public class Menu extends JMenuBar implements ActionListener {
 		buttonGroup.add(split);
 		split.addActionListener(this);
 		viewMenu.add(split);
+		
+		// Edit Menu
+		editMenu = new JMenu("Edit");
+		this.add(editMenu);
+
+		// File menuItems
+		undo = new JMenuItem("Undo");
+		undo.addActionListener(this);
+		editMenu.add(undo);
+
+		redo = new JMenuItem("Redo");
+		redo.addActionListener(this);
+		editMenu.add(redo);
 	}
 	
-	/*** Call Performer section in class Window ***/
+	/* Call Performer section in class Window */
 	public void actionPerformed(ActionEvent e) {
-		
-		if(e.getSource() == this.importFile){
+		if(e.getSource() == this.importFile)
 			this.performer.importFile();
-		}
 		
-		if(e.getSource() == this.delete){
+		if(e.getSource() == this.delete)
 			this.performer.delete();
-		}
 		
-		if(e.getSource() == this.quit){
+		if(e.getSource() == this.quit)
 			this.performer.quit();
-		}
 		
-		if(e.getSource() == this.photoViewer){
+		if(e.getSource() == this.photoViewer)
 			this.performer.photoViewer();
-		}
 		
-		if(e.getSource() == this.browser){
+		if(e.getSource() == this.browser)
 			this.performer.browser();
-		}
 		
-		if(e.getSource() == this.split){
-			this.performer.split();			
-		}		
+		if(e.getSource() == this.split)
+			this.performer.split();
+		
+		if(e.getSource() == this.undo)
+			this.performer.undo();
+		
+		if(e.getSource() == this.redo)
+			this.performer.redo();
 	}
 }

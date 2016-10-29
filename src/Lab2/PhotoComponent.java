@@ -270,17 +270,40 @@ public class PhotoComponent extends JComponent implements KeyListener, MouseList
 	}
 	
 	public void initializeComponent(){
-		linesInFront = new ArrayList<ArrayList<Point>>();
-		linesInBack = new ArrayList<ArrayList<Point>>();
+		linesInFront.clear();
+		linesInBack.clear();
 		isFlipped = false;
 		viewWidth = 0; viewHeight = 0;
 		left = 0; top = 0; right = 0; bottom = 0;
 		viewRatio = 1;
-		textsInFront = new ArrayList<Text>();
-		textsInBack = new ArrayList<Text>();
+		textsInFront.clear();
+		textsInBack.clear();
+		
 	}
 	
-	/*** Scale point: move & resize ***/
+	/*public void undo() {
+		// System.out.println(shapes.size());
+		if (shapes.size() >= 1) {
+			prevShapes.add(shapes.get(shapes.size() - 1));
+			shapes.remove(shapes.size() - 1);
+		} else {
+			System.out.println("Nothing to undo");
+		}
+		repaint();
+	}
+	
+	public void redo() {
+		// System.out.println(prevShapes.size());
+		if (prevShapes.size() >= 1) {
+			shapes.add(prevShapes.get(prevShapes.size() - 1));
+			prevShapes.remove(prevShapes.size() - 1);
+		} else {
+			System.out.println("Nothing to redo");
+		}
+		repaint();
+	}*/
+	
+	/* Scale point: move & resize */
 	public Point physicToLogicPoint(Point p){
 		int logicX = (int) ((p.x - left) / viewRatio);
 		int logicY = (int) ((p.y - top) / viewRatio);

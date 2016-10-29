@@ -9,4 +9,6 @@ public interface Performer {
 	public void photoViewer();
 	public void browser();
 	public void split();
+	public void undo();
+	public void redo();
 }

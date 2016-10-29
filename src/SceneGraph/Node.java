@@ -3,6 +3,7 @@ package SceneGraph;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.util.*;
 
 public abstract class Node {
@@ -29,7 +30,7 @@ public abstract class Node {
 		children.remove(n);
 	}
 	
-	//How to cascade paint ?? //TODO
+	//How to cascade paint ??
 	public void cascadePaint(){
 		for (Node child : children) {
 			//all elements of parent is cascaded to childre??
@@ -46,8 +47,8 @@ public abstract class Node {
 		
 	}
 	
-	public void getBounds(){
-		
+	public Rectangle getBounds(){
+		return null;
 	}
 
 	public void paint(Graphics g) {
