@@ -23,7 +23,10 @@ public class SceneGraphTest extends JFrame {
 		scene = new Scene();
 		Node root = scene.getRoot();
 		Node hello = new TextNode("Hello", new Point(10, 10));
+		Node bye = new TextNode("Bye", new Point(10, 30));
+		bye.setVisible(false);
 		root.add(hello);
+		root.add(bye);
 		
 		this.add(scene, BorderLayout.CENTER);
 		this.pack();
