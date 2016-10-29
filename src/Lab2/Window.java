@@ -78,7 +78,7 @@ public class Window extends JFrame implements Performer {
 			String path = file.getAbsolutePath();
 			
 			try {
-				this.photoComponent.initializeComponent();
+				//this.photoComponent.initializeComponent();
 				BufferedImage img = ImageIO.read(new File(path));
 				this.add(scrollPane, BorderLayout.CENTER);
 				this.photoComponent.setImage(img);
