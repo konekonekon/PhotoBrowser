@@ -81,4 +81,12 @@ public abstract class Node {
 
 	protected abstract void paintNode(Graphics2D g2);
 
+	public List<Node> getChildren() {
+		return children;
+	}
+
+	public Node getParent() {
+		return parent;
+	}
+
 }
