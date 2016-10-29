@@ -1,61 +1,32 @@
 package SceneGraph;
 
-import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.util.*;
 
 public abstract class Node {
 
-	private Node parent;
 	private List<Node> children;
-	private boolean visibility;
 
-	/*private Node paint;
-	private List<Node> paintChildren;*/
-	
-	public Node(){
-		parent = null;
+	public Node() {
 		children = new ArrayList<Node>();
-		visibility = false;
-		
 	}
-	
-	public void addChidren(Node n){
+
+	public void add(Node n) {
 		children.add(n);
 	}
-	
-	public void removeChildren(Node n){
+
+	public void remove(Node n) {
 		children.remove(n);
 	}
-	
-	//How to cascade paint ??
-	public void cascadePaint(){
-		for (Node child : children) {
-			//all elements of parent is cascaded to childre??
-			//child = parent;
-			
-		}
-	}
-	//correct?
-	public int getColor(Color c) {
-		return c.getRGB();
-	}
-	//what is this??
-	public void transformation() {
-		
-	}
-	
-	public Rectangle getBounds(){
-		return null;
+
+	//public abstract Rectangle getBounds();
+
+	public void paint(Graphics2D g2) {
+		paintNode(g2);
+		for (Node child : children)
+			child.paint(g2);
 	}
 
-	public void paint(Graphics g) {
-		Graphics2D g2 = (Graphics2D) g;
-		
-		
-		
-	}
-	
+	protected abstract void paintNode(Graphics2D g2);
+
 }

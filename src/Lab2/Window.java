@@ -5,9 +5,11 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -97,16 +99,32 @@ public class Window extends JFrame implements Performer {
 	@Override
 	public void photoViewer() {
 		label.setText("Chose 'PhotoViewer mode'.");
-		
-		
+		BufferedImage aImage = this.photoComponent.getImage();
+		this.add(scrollPane, BorderLayout.CENTER);
+		this.photoComponent.setImage(aImage);
 	}
 	@Override
 	public void browser() {
 		label.setText("Choose 'Browser mode'.");
+		int verticalGrid = 3;
+		int horizontalGrid = 2;
+		JPanel panel = new JPanel(); 
+		panel.setLayout(new GridLayout(horizontalGrid, verticalGrid, 10, 10));
+		
+		Image aImage = this.photoComponent.getImage();
+		ImageIcon icon = new ImageIcon(aImage);
+		JLabel thumb = new JLabel();
+		thumb.setIcon(icon);
+		for(int i = 0; i < verticalGrid*horizontalGrid; i++)
+			panel.add(thumb);
+		
+		this.add(panel, BorderLayout.CENTER);
 	}
 	@Override
 	public void split() {
 		label.setText("Choose 'Split mode'.");
+		
+		
 	}
 
 	@Override

@@ -259,7 +259,7 @@ public class PhotoComponent extends JComponent implements KeyListener, MouseList
 		}
 	}
 	
-	public Image getImage() {
+	public BufferedImage getImage() {
 		return image;
 	}
 
