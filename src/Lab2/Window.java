@@ -54,6 +54,7 @@ public class Window extends JFrame implements Performer {
 		this.setJMenuBar(menu);	
 		this.add(toolBar, BorderLayout.NORTH);
 		this.add(label, BorderLayout.SOUTH);
+		this.add(scrollPane, BorderLayout.CENTER);
 
 		this.pack();
 		this.setVisible(true);
@@ -80,7 +81,7 @@ public class Window extends JFrame implements Performer {
 			try {
 				//this.photoComponent.initializeComponent();
 				BufferedImage img = ImageIO.read(new File(path));
-				this.add(scrollPane, BorderLayout.CENTER);
+				//this.add(scrollPane, BorderLayout.CENTER);
 				this.photoComponent.setImage(img);
 			} catch (IOException e1) {
 				e1.printStackTrace();
