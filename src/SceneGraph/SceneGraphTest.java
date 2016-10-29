@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.io.File;
@@ -52,13 +53,10 @@ public class SceneGraphTest extends JFrame {
 		container.add(bye);
 		
 		root.setColor(Color.BLUE);
+		AffineTransform at = new AffineTransform();
+		at.scale(0.5, 0.5);
+		root.setTransform(at);
 		root.add(container);
-		/*root.add(path);
-		if (image != null)
-			root.add(image);
-		root.add(shape);
-		root.add(hello);
-		root.add(bye);*/
 		
 		this.add(scene, BorderLayout.CENTER);
 		this.pack();

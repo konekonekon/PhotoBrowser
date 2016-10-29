@@ -3,6 +3,7 @@ package SceneGraph;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
 import java.util.*;
 
 public abstract class Node {
@@ -11,6 +12,7 @@ public abstract class Node {
 	protected Node parent;
 	protected boolean visible;
 	protected Color color;
+	protected AffineTransform transform;
 
 	protected Node() {
 		children = new ArrayList<Node>();
@@ -37,6 +39,22 @@ public abstract class Node {
 		this.visible = visible;
 	}
 	
+	public AffineTransform getTransform() {
+		return transform;
+	}
+
+	public void setTransform(AffineTransform transform) {
+		this.transform = transform;
+	}
+	
+	public void scale(double sx, double sy) {
+		transform.scale(sx, sy);
+	}
+	
+	public void translate(double tx, double ty) {
+		transform.translate(tx, ty);
+	}
+	
 	public Color getColor() {
 		return this.color;
 	}
@@ -48,14 +66,15 @@ public abstract class Node {
 	public abstract Rectangle getBounds();
 
 	public void paint(Graphics2D g2) {
+		// Graphical context
 		if (!visible)
 			return;
 		if (color != null)
 			g2.setColor(color);
+		if (transform != null)
+			g2.setTransform(transform);
+		// Cascade paint
 		paintNode(g2);
-		Rectangle bounds = getBounds();
-		if (bounds != null)
-			g2.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
 		for (Node child : children)
 			child.paint(g2);
 	}
