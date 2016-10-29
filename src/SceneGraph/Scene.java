@@ -25,7 +25,6 @@ public class Scene extends JComponent {
 		g2.setColor(Color.WHITE);
 		g2.fillRect(0, 0, getWidth(), getHeight());
 
-		g2.setColor(Color.RED); // DEBUG
 		root.paint(g2);
 	}
 }

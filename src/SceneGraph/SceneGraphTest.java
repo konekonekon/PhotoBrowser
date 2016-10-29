@@ -1,6 +1,7 @@
 package SceneGraph;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
 
@@ -24,7 +25,8 @@ public class SceneGraphTest extends JFrame {
 		Node root = scene.getRoot();
 		Node hello = new TextNode("Hello", new Point(10, 10));
 		Node bye = new TextNode("Bye", new Point(10, 30));
-		bye.setVisible(false);
+		root.setColor(Color.BLUE);
+		//bye.setVisible(false);
 		root.add(hello);
 		root.add(bye);
 		

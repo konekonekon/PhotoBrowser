@@ -1,5 +1,6 @@
 package SceneGraph;
 
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
@@ -73,6 +74,12 @@ public class ShapeNode extends Node implements Shape {
 	public boolean intersects(double arg0, double arg1, double arg2, double arg3) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	protected void paintNode(Graphics2D g2) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

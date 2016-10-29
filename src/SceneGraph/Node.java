@@ -1,5 +1,6 @@
 package SceneGraph;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.*;
 
@@ -8,6 +9,7 @@ public abstract class Node {
 	private List<Node> children;
 	private Node parent;
 	private boolean visible;
+	private Color color;
 
 	protected Node() {
 		children = new ArrayList<Node>();
@@ -33,12 +35,22 @@ public abstract class Node {
 	public void setVisible(boolean visible) {
 		this.visible = visible;
 	}
+	
+	public Color getColor() {
+		return this.color;
+	}
+	
+	public void setColor(Color c) {
+		this.color = c;
+	}
 
 	//public abstract Rectangle getBounds();
 
 	public void paint(Graphics2D g2) {
 		if (!visible)
 			return;
+		if (color != null)
+			g2.setColor(color);
 		paintNode(g2);
 		for (Node child : children)
 			child.paint(g2);
