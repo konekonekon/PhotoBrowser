@@ -3,8 +3,6 @@ package SceneGraph;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
-
 import javax.swing.JComponent;
 
 public class Scene extends JComponent {
@@ -13,10 +11,12 @@ public class Scene extends JComponent {
 
 	private RootNode root;
 
+	public RootNode getRoot() {
+		return root;
+	}
+
 	public Scene() {
 		root = new RootNode();
-		Node text = new TextNode("Hello", new Point(10, 10));
-		root.add(text);
 	}
 
 	@Override
@@ -27,6 +27,5 @@ public class Scene extends JComponent {
 
 		g2.setColor(Color.RED); // DEBUG
 		root.paint(g2);
-
 	}
 }

@@ -2,6 +2,8 @@ package SceneGraph;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Point;
+
 import javax.swing.JFrame;
 
 public class SceneGraphTest extends JFrame {
@@ -19,8 +21,11 @@ public class SceneGraphTest extends JFrame {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		scene = new Scene();
+		Node root = scene.getRoot();
+		Node hello = new TextNode("Hello", new Point(10, 10));
+		root.add(hello);
+		
 		this.add(scene, BorderLayout.CENTER);
-
 		this.pack();
 	}
 
