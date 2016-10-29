@@ -17,14 +17,14 @@ public class Scene extends JComponent {
 
 	public Scene() {
 		root = new RootNode();
+		setBackground(Color.GRAY);
 	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
-		Graphics2D g2 = (Graphics2D) g;
-		g2.setColor(Color.WHITE);
-		g2.fillRect(0, 0, getWidth(), getHeight());
-
-		root.paint(g2);
+		g.setColor(getBackground());
+		g.fillRect(0, 0, getWidth(), getHeight());
+		g.setColor(getForeground());
+		root.paint((Graphics2D) g);
 	}
 }
