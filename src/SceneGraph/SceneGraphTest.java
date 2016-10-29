@@ -33,24 +33,32 @@ public class SceneGraphTest extends JFrame {
 		Node bye = new TextNode("Bye", new Point(10, 30));
 		Node shape = new ShapeNode(new Ellipse2D.Double(50, 50, 50, 50));
 		GeneralPath aPath = new GeneralPath();
-		aPath.moveTo(0, 300);
+		aPath.moveTo(20, 300);
 		aPath.lineTo(100, 280);
 		aPath.lineTo(150, 250);
 		Node path = new PathNode(aPath);
 		
 		Node image = null;
 		try {
-			image = new ImageNode(ImageIO.read(new File("./photo.jpg")), 0, 0);
+			image = new ImageNode(ImageIO.read(new File("./photo.jpg")), 50, 50);
 		} catch (IOException e) {
 		}
 		
+		Node container = new ContainerNode();
+		container.add(path);
+		container.add(image);
+		container.add(shape);
+		container.add(hello);
+		container.add(bye);
+		
 		root.setColor(Color.BLUE);
-		root.add(path);
+		root.add(container);
+		/*root.add(path);
 		if (image != null)
 			root.add(image);
 		root.add(shape);
 		root.add(hello);
-		root.add(bye);
+		root.add(bye);*/
 		
 		this.add(scene, BorderLayout.CENTER);
 		this.pack();

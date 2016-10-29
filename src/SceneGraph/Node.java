@@ -7,10 +7,10 @@ import java.util.*;
 
 public abstract class Node {
 
-	private List<Node> children;
-	private Node parent;
-	private boolean visible;
-	private Color color;
+	protected List<Node> children;
+	protected Node parent;
+	protected boolean visible;
+	protected Color color;
 
 	protected Node() {
 		children = new ArrayList<Node>();
