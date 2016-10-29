@@ -4,7 +4,12 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.GeneralPath;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 public class SceneGraphTest extends JFrame {
@@ -20,13 +25,30 @@ public class SceneGraphTest extends JFrame {
 		this.setPreferredSize(new Dimension(600, 400));
 		this.setLayout(new BorderLayout());
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+		
+		/* test nodes */
 		scene = new Scene();
 		Node root = scene.getRoot();
 		Node hello = new TextNode("Hello", new Point(10, 10));
 		Node bye = new TextNode("Bye", new Point(10, 30));
+		Node shape = new ShapeNode(new Ellipse2D.Double(50, 50, 50, 50));
+		GeneralPath aPath = new GeneralPath();
+		aPath.moveTo(0, 300);
+		aPath.lineTo(100, 280);
+		aPath.lineTo(150, 250);
+		Node path = new PathNode(aPath);
+		
+		Node image = null;
+		try {
+			image = new ImageNode(ImageIO.read(new File("./photo.jpg")), 0, 0);
+		} catch (IOException e) {
+		}
+		
 		root.setColor(Color.BLUE);
-		//bye.setVisible(false);
+		root.add(path);
+		if (image != null)
+			root.add(image);
+		root.add(shape);
 		root.add(hello);
 		root.add(bye);
 		

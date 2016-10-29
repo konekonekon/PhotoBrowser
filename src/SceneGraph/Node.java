@@ -2,6 +2,7 @@ package SceneGraph;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.util.*;
 
 public abstract class Node {
@@ -44,7 +45,7 @@ public abstract class Node {
 		this.color = c;
 	}
 
-	//public abstract Rectangle getBounds();
+	public abstract Rectangle getBounds();
 
 	public void paint(Graphics2D g2) {
 		if (!visible)
@@ -52,6 +53,9 @@ public abstract class Node {
 		if (color != null)
 			g2.setColor(color);
 		paintNode(g2);
+		Rectangle bounds = getBounds();
+		if (bounds != null)
+			g2.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
 		for (Node child : children)
 			child.paint(g2);
 	}

@@ -6,14 +6,19 @@ import java.awt.geom.GeneralPath;
 //stroke
 public class PathNode extends Node {
 	
-	private GeneralPath aPath;
+	private GeneralPath path;
 	
-	public PathNode() {
-		aPath = new GeneralPath();		
+	public PathNode(GeneralPath path) {
+		this.path = path;		
 	}
 	
 	@Override
 	public Rectangle getBounds() {
-		return this.aPath.getBounds();
+		return path.getBounds();
+	}
+
+	@Override
+	protected void paintNode(Graphics2D g2) {
+		g2.draw(path);
 	}
 }
