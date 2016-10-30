@@ -4,11 +4,10 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 
 import SceneGraph.*;
 
-public class PhotoComponent extends Scene implements MouseListener, MouseMotionListener {
+public class PhotoComponent extends Scene implements MouseListener, MouseMotionListener, KeyListener {
 
 	private static final long serialVersionUID = 1L;
 	private BufferedImage image;
@@ -64,16 +63,32 @@ public class PhotoComponent extends Scene implements MouseListener, MouseMotionL
 	
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		if (currentStroke == null)
+		if (image == null)
 			return;
 		
-		/*if (e.getX() < image.getWidth() && e.getY() < image.getHeight())
-			currentStroke.lineTo(e.getX(), e.getY());*/
-		if (currentStroke.getCurrentPoint().getX() < image.getWidth() && 
-				currentStroke.getCurrentPoint().getY() < image.getHeight())
+		if(currentStroke == null) {
+			if (e.getX() < image.getWidth() && e.getY() < image.getHeight()) {
+				if (front.isVisible()) {
+					currentStroke = new GeneralPath();
+					PathNode lineInFront = new PathNode(currentStroke);
+					lineInFront.setColor(Color.RED);
+					front.add(lineInFront);
+					currentStroke.moveTo(e.getX(), e.getY());
+				}
+				if (back.isVisible()) {
+					currentStroke = new GeneralPath();
+					PathNode lineInBack = new PathNode(currentStroke);
+					lineInBack.setColor(Color.RED);
+					back.add(lineInBack);
+					currentStroke.moveTo(e.getX(), e.getY());
+				}
+			}
+		}
+		if (e.getX() < image.getWidth() && e.getY() < image.getHeight())
 			currentStroke.lineTo(e.getX(), e.getY());
 		else
-			
+			currentStroke = null;
+		
 		repaint();
 	}
 
@@ -103,7 +118,6 @@ public class PhotoComponent extends Scene implements MouseListener, MouseMotionL
 			 */
 		}
 		repaint();
-
 	}
 
 	@Override
@@ -116,6 +130,7 @@ public class PhotoComponent extends Scene implements MouseListener, MouseMotionL
 	public void mousePressed(MouseEvent e) {
 		if (image == null)
 			return;
+		
 		if (e.getX() < image.getWidth() && e.getY() < image.getHeight()) {
 			if (front.isVisible()) {
 				currentStroke = new GeneralPath();
@@ -140,4 +155,20 @@ public class PhotoComponent extends Scene implements MouseListener, MouseMotionL
 		currentStroke = null;
 	}
 
+	@Override
+	public void keyPressed(KeyEvent arg0) {
+	}
+
+	@Override
+	public void keyReleased(KeyEvent arg0) {
+	}
+
+	@Override
+	public void keyTyped(KeyEvent arg0) {
+		/*if (currentText != null){
+			currentText.text += e.getKeyChar();
+			repaint();
+		}*/
+		
+	}
 }
