@@ -1,4 +1,4 @@
-package Lab2A;
+package Lab2WithSceneGraph;
 
 import java.awt.event.*;
 import javax.swing.*;

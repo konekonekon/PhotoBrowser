@@ -1,8 +1,8 @@
-package Lab2A;
+package Lab2WithSceneGraph;
 
 import javax.swing.JFrame;
 
-public class Main {
+public class MainLab2WithSceneGraph {
 
 	public static void main(String[] args) {
 		Window w = new Window();

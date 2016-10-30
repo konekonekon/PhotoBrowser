@@ -1,4 +1,4 @@
-package Lab2A;
+package Lab2WithSceneGraph;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -18,7 +18,7 @@ public class Window extends JFrame implements Performer {
 	private File file;
 
 	public Window() {
-		this.setTitle("Photo Browser");
+		this.setTitle("Photo Browser with Scene Graph");
 		this.setPreferredSize(new Dimension(700, 500));
 		this.setMinimumSize(new Dimension(250, 200));
 		this.setLayout(new BorderLayout());

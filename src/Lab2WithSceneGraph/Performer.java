@@ -1,4 +1,4 @@
-package Lab2A;
+package Lab2WithSceneGraph;
 
 /* Connection between Window and Menu/Toolbar */
 public interface Performer {
