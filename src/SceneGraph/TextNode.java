@@ -4,8 +4,9 @@ import java.awt.*;
 
 public class TextNode extends Node {
 
-	private String text;
+	public String text;
 	private Point startPoint;
+	private int maxWidth;
 
 	public TextNode(String str, Point p) {
 		text = str;

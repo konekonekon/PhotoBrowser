@@ -10,17 +10,21 @@ import SceneGraph.*;
 public class PhotoComponent extends Scene implements MouseListener, MouseMotionListener, KeyListener {
 
 	private static final long serialVersionUID = 1L;
+	private final static String placeholder = "Insert text";
 	private BufferedImage image;
 	private ImageNode imageNode;
 	private ContainerNode front;
 	private ContainerNode back;
 	private ShapeNode shape;
 	private GeneralPath currentStroke;
+	private TextNode currentText;
 
 	public PhotoComponent() {
 		reset();
 		addMouseListener(this);
 		addMouseMotionListener(this);
+		addKeyListener(this);
+		this.setFocusable(true);
 	}
 
 	public void reset() {
@@ -55,6 +59,7 @@ public class PhotoComponent extends Scene implements MouseListener, MouseMotionL
 		
 		//add shape to back
 		shape = new ShapeNode(new Rectangle(0, 0, image.getWidth(), image.getHeight()));
+		shape.setColor(Color.WHITE);
 		back.add(shape);
 		back.setVisible(false);
 		
@@ -66,24 +71,9 @@ public class PhotoComponent extends Scene implements MouseListener, MouseMotionL
 		if (image == null)
 			return;
 		
-		if(currentStroke == null) {
-			if (e.getX() < image.getWidth() && e.getY() < image.getHeight()) {
-				if (front.isVisible()) {
-					currentStroke = new GeneralPath();
-					PathNode lineInFront = new PathNode(currentStroke);
-					lineInFront.setColor(Color.RED);
-					front.add(lineInFront);
-					currentStroke.moveTo(e.getX(), e.getY());
-				}
-				if (back.isVisible()) {
-					currentStroke = new GeneralPath();
-					PathNode lineInBack = new PathNode(currentStroke);
-					lineInBack.setColor(Color.RED);
-					back.add(lineInBack);
-					currentStroke.moveTo(e.getX(), e.getY());
-				}
-			}
-		}
+		if(currentStroke == null)
+			startStroke(e);
+
 		if (e.getX() < image.getWidth() && e.getY() < image.getHeight())
 			currentStroke.lineTo(e.getX(), e.getY());
 		else
@@ -97,7 +87,10 @@ public class PhotoComponent extends Scene implements MouseListener, MouseMotionL
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if (image != null) {
+		if (image == null)
+			return;
+		
+		if(e.getX() < image.getWidth() && e.getY() < image.getHeight()) {
 			if (e.getClickCount() == 2) {
 				if (front.isVisible()){
 					front.setVisible(false);
@@ -107,16 +100,23 @@ public class PhotoComponent extends Scene implements MouseListener, MouseMotionL
 					front.setVisible(true);
 					back.setVisible(false);
 				}
-					
-				// currentText = null;
+				currentText = null;
 			}
-			/*
-			 * if (e.getClickCount() == 1) { this.requestFocusInWindow(); Create
-			 * new text //currentText = new Text("", viewPoint); if (isFlipped
-			 * == true) { textsInBack.add(currentText); } else {
-			 * textsInFront.add(currentText); } }
-			 */
+			
+			if (e.getClickCount() == 1) {
+				this.requestFocusInWindow();
+				/* Create new text */
+				currentText = new TextNode(placeholder, e.getPoint());
+				currentText.setColor(Color.RED);
+				if (back.isVisible()) {
+					back.add(currentText);
+				} else {
+					front.add(currentText);
+				}
+			}
 		}
+		else
+			currentText = null;
 		repaint();
 	}
 
@@ -126,27 +126,25 @@ public class PhotoComponent extends Scene implements MouseListener, MouseMotionL
 	@Override
 	public void mouseExited(MouseEvent arg0) {}
 
+	private void startStroke(MouseEvent e) {
+		if (e.getX() < image.getWidth() && e.getY() < image.getHeight()) {
+			currentStroke = new GeneralPath();
+			currentStroke.moveTo(e.getX(), e.getY());
+			PathNode line = new PathNode(currentStroke);
+			line.setColor(Color.RED);
+			if (front.isVisible())
+				front.add(line);
+			else if (back.isVisible())
+				back.add(line);
+		}
+	}
+	
 	@Override
 	public void mousePressed(MouseEvent e) {
+		currentText = null;
 		if (image == null)
 			return;
-		
-		if (e.getX() < image.getWidth() && e.getY() < image.getHeight()) {
-			if (front.isVisible()) {
-				currentStroke = new GeneralPath();
-				PathNode lineInFront = new PathNode(currentStroke);
-				lineInFront.setColor(Color.RED);
-				front.add(lineInFront);
-				currentStroke.moveTo(e.getX(), e.getY());
-			}
-			if (back.isVisible()) {
-				currentStroke = new GeneralPath();
-				PathNode lineInBack = new PathNode(currentStroke);
-				lineInBack.setColor(Color.RED);
-				back.add(lineInBack);
-				currentStroke.moveTo(e.getX(), e.getY());
-			}
-		}
+		startStroke(e);
 		repaint();
 	}
 
@@ -164,11 +162,14 @@ public class PhotoComponent extends Scene implements MouseListener, MouseMotionL
 	}
 
 	@Override
-	public void keyTyped(KeyEvent arg0) {
-		/*if (currentText != null){
-			currentText.text += e.getKeyChar();
-			repaint();
-		}*/
+	public void keyTyped(KeyEvent e) {
+		if (image == null || currentText == null)
+			return;
 		
+		if (currentText.text == placeholder) {
+			currentText.text = "";
+		}
+		currentText.text += e.getKeyChar();
+		repaint();
 	}
 }
