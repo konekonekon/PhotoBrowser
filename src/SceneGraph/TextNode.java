@@ -14,6 +14,7 @@ public class TextNode extends Node {
 
 	@Override
 	public Rectangle getBounds() {
+		//TODO width, height
 		return new Rectangle(startPoint.x, startPoint.y - 10, 10, 10);
 	}
 	

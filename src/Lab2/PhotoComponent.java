@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 import SceneGraph.*;
 
@@ -65,7 +66,14 @@ public class PhotoComponent extends Scene implements MouseListener, MouseMotionL
 	public void mouseDragged(MouseEvent e) {
 		if (currentStroke == null)
 			return;
-		currentStroke.lineTo(e.getX(), e.getY());
+		
+		/*if (e.getX() < image.getWidth() && e.getY() < image.getHeight())
+			currentStroke.lineTo(e.getX(), e.getY());*/
+		if (currentStroke.getCurrentPoint().getX() < image.getWidth() && 
+				currentStroke.getCurrentPoint().getY() < image.getHeight())
+			currentStroke.lineTo(e.getX(), e.getY());
+		else
+			
 		repaint();
 	}
 
@@ -108,12 +116,22 @@ public class PhotoComponent extends Scene implements MouseListener, MouseMotionL
 	public void mousePressed(MouseEvent e) {
 		if (image == null)
 			return;
-		
-		currentStroke = new GeneralPath();
-		PathNode line = new PathNode(currentStroke);
-		line.setColor(Color.RED);
-		front.add(line);
-		currentStroke.moveTo(e.getX(), e.getY());
+		if (e.getX() < image.getWidth() && e.getY() < image.getHeight()) {
+			if (front.isVisible()) {
+				currentStroke = new GeneralPath();
+				PathNode lineInFront = new PathNode(currentStroke);
+				lineInFront.setColor(Color.RED);
+				front.add(lineInFront);
+				currentStroke.moveTo(e.getX(), e.getY());
+			}
+			if (back.isVisible()) {
+				currentStroke = new GeneralPath();
+				PathNode lineInBack = new PathNode(currentStroke);
+				lineInBack.setColor(Color.RED);
+				back.add(lineInBack);
+				currentStroke.moveTo(e.getX(), e.getY());
+			}
+		}
 		repaint();
 	}
 
