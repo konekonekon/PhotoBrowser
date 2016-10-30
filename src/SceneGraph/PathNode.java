@@ -19,11 +19,6 @@ public class PathNode extends Node {
 
 	@Override
 	protected void paintNode(Graphics2D g2) {
-		Rectangle rec = this.getParent().getBounds();
-		if (path.getCurrentPoint().getX() > rec.x && path.getCurrentPoint().getY() > rec.y) {
-			if (path.getCurrentPoint().getX() < (rec.width-rec.x) && path.getCurrentPoint().getY() < (rec.height-rec.y)) {
-				g2.draw(path);
-			}
-		}
+		g2.draw(path);
 	}
 }
