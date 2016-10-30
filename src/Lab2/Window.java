@@ -25,7 +25,7 @@ public class Window extends JFrame implements Performer {
 	public Window(){
 		this.setTitle("Photo Browser");
 		this.setPreferredSize(new Dimension(700,500));
-		this.setMinimumSize(new Dimension(700, 500));
+		this.setMinimumSize(new Dimension(250, 200));
 		this.setLayout(new BorderLayout());
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
