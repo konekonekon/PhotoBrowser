@@ -1,12 +1,8 @@
 package SceneGraph;
 
 import java.awt.*;
-import java.awt.font.FontRenderContext;
-import java.awt.font.LineBreakMeasurer;
-import java.awt.font.TextLayout;
-import java.text.AttributedCharacterIterator;
-import java.text.AttributedString;
-
+import java.awt.font.*;
+import java.text.*;
 
 public class TextNode extends Node {
 
@@ -22,10 +18,9 @@ public class TextNode extends Node {
 
 	@Override
 	public Rectangle getBounds() {
-		//TODO width, height
 		return new Rectangle(startPoint.x, startPoint.y - 10, 10, 10);
 	}
-	
+
 	public int getMaxWidth() {
 		return maxWidth;
 	}
@@ -33,7 +28,7 @@ public class TextNode extends Node {
 	public void setMaxWidth(int maxWidth) {
 		this.maxWidth = maxWidth;
 	}
-	
+
 	public int getMaxHeight() {
 		return maxHeight;
 	}
@@ -57,8 +52,8 @@ public class TextNode extends Node {
 					&& drawPosY < startPoint.y + maxHeight) {
 
 				TextLayout textLayout = measurer.nextLayout(breakWidth);
-				float drawPosX = textLayout.isLeftToRight() ? startPoint.x : breakWidth
-						- textLayout.getAdvance();
+				float drawPosX = textLayout.isLeftToRight() ? startPoint.x
+						: breakWidth - textLayout.getAdvance();
 				textLayout.draw(g2, drawPosX, drawPosY);
 				drawPosY += textLayout.getAscent();
 				drawPosY += textLayout.getDescent() + textLayout.getLeading();

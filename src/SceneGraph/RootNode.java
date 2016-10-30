@@ -16,5 +16,4 @@ public class RootNode extends Node {
 	public Rectangle getBounds() {
 		return null;
 	}
-	
 }

@@ -38,7 +38,7 @@ public abstract class Node {
 	public void setVisible(boolean visible) {
 		this.visible = visible;
 	}
-	
+
 	public AffineTransform getTransform() {
 		return transform;
 	}
@@ -46,23 +46,23 @@ public abstract class Node {
 	public void setTransform(AffineTransform transform) {
 		this.transform = transform;
 	}
-	
+
 	public void scale(double sx, double sy) {
 		transform.scale(sx, sy);
 	}
-	
+
 	public void translate(double tx, double ty) {
 		transform.translate(tx, ty);
 	}
-	
+
 	public Color getColor() {
 		return this.color;
 	}
-	
+
 	public void setColor(Color c) {
 		this.color = c;
 	}
-	
+
 	public List<Node> getChildren() {
 		return children;
 	}
@@ -74,14 +74,15 @@ public abstract class Node {
 	public abstract Rectangle getBounds();
 
 	public void paint(Graphics2D g2) {
-		// Graphical context
+		/* Graphical context */
 		if (!visible)
 			return;
 		if (color != null)
 			g2.setColor(color);
 		if (transform != null)
 			g2.setTransform(transform);
-		// Cascade paint
+
+		/* Cascade paint */
 		paintNode(g2);
 		for (Node child : children)
 			child.paint(g2);

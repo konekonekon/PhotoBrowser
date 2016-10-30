@@ -1,14 +1,23 @@
-package Lab2;
+package Lab2A;
 
-/*** For Window ***/
+/* Connection between Window and Menu/Toolbar */
 public interface Performer {
 
 	public void importFile();
+
 	public void delete();
+
 	public void quit();
+
 	public void photoViewer();
+
 	public void browser();
+
 	public void split();
-	public void undo();
-	public void redo();
+	
+	public void family();
+	
+	public void vacation();
+	
+	public void school();
 }

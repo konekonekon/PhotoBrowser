@@ -1,4 +1,4 @@
-package Lab2;
+package Lab2A;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -7,7 +7,8 @@ import java.awt.image.BufferedImage;
 
 import SceneGraph.*;
 
-public class PhotoComponent extends Scene implements MouseListener, MouseMotionListener, KeyListener {
+public class PhotoComponent extends Scene implements MouseListener,
+		MouseMotionListener, KeyListener {
 
 	private static final long serialVersionUID = 1L;
 	private final static String placeholder = "Insert text";
@@ -39,94 +40,32 @@ public class PhotoComponent extends Scene implements MouseListener, MouseMotionL
 	}
 
 	public void setImage(BufferedImage image) {
-		//clear root's children
-		if(front != null)
+		if (front != null)
 			front.getParent().remove(front);
-		if(back != null)
+		if (back != null)
 			back.getParent().remove(back);
-		
-		//create new and add to root
+
+		/* Create containers and add them to root */
 		front = new ContainerNode();
 		back = new ContainerNode();
 		getRoot().add(front);
 		getRoot().add(back);
-		
-		//add image to front
+
+		/* Add image to front */
 		this.image = image;
 		imageNode = new ImageNode(image, 0, 0);
 		front.add(imageNode);
 		setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
-		
-		//add shape to back
-		shape = new ShapeNode(new Rectangle(0, 0, image.getWidth(), image.getHeight()));
+
+		/* Add shape to back */
+		shape = new ShapeNode(new Rectangle(0, 0, image.getWidth(),
+				image.getHeight()));
 		shape.setColor(Color.WHITE);
 		back.add(shape);
 		back.setVisible(false);
-		
+
 		repaint();
 	}
-	
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		if (image == null)
-			return;
-		
-		if(currentStroke == null)
-			startStroke(e);
-
-		if (e.getX() < image.getWidth() && e.getY() < image.getHeight())
-			currentStroke.lineTo(e.getX(), e.getY());
-		else
-			currentStroke = null;
-		
-		repaint();
-	}
-
-	@Override
-	public void mouseMoved(MouseEvent arg0) {}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		if (image == null)
-			return;
-		
-		if(e.getX() < image.getWidth() && e.getY() < image.getHeight()) {
-			if (e.getClickCount() == 2) {
-				if (front.isVisible()){
-					front.setVisible(false);
-					back.setVisible(true);
-				}
-				else {
-					front.setVisible(true);
-					back.setVisible(false);
-				}
-				currentText = null;
-			}
-			
-			if (e.getClickCount() == 1) {
-				this.requestFocusInWindow();
-				/* Create new text */
-				currentText = new TextNode(placeholder, e.getPoint());
-				currentText.setColor(Color.RED);
-				currentText.setMaxWidth(image.getWidth() - e.getX());
-				currentText.setMaxHeight(image.getHeight() - e.getY());
-				if (back.isVisible()) {
-					back.add(currentText);
-				} else {
-					front.add(currentText);
-				}
-			}
-		}
-		else
-			currentText = null;
-		repaint();
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent arg0) {}
-
-	@Override
-	public void mouseExited(MouseEvent arg0) {}
 
 	private void startStroke(MouseEvent e) {
 		if (e.getX() < image.getWidth() && e.getY() < image.getHeight()) {
@@ -140,10 +79,82 @@ public class PhotoComponent extends Scene implements MouseListener, MouseMotionL
 				back.add(line);
 		}
 	}
-	
+
+	/* Cancel input */
+	private void resetTextInput() {
+		if (currentText != null) {
+			if (currentText.text == placeholder)
+				currentText.getParent().remove(currentText);
+		}
+		currentText = null;
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		if (image == null)
+			return;
+
+		if (currentStroke == null)
+			startStroke(e);
+
+		if (e.getX() < image.getWidth() && e.getY() < image.getHeight())
+			currentStroke.lineTo(e.getX(), e.getY());
+		else
+			currentStroke = null;
+
+		repaint();
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent arg0) {
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		if (image == null)
+			return;
+
+		if (e.getX() < image.getWidth() && e.getY() < image.getHeight()) {
+			/* flipping */
+			if (e.getClickCount() == 2) {
+				if (front.isVisible()) {
+					front.setVisible(false);
+					back.setVisible(true);
+				} else {
+					front.setVisible(true);
+					back.setVisible(false);
+				}
+				resetTextInput();
+			}
+
+			if (e.getClickCount() == 1) {
+				this.requestFocusInWindow();
+				/* Create new text */
+				currentText = new TextNode(placeholder, e.getPoint());
+				currentText.setColor(Color.RED);
+				currentText.setMaxWidth(image.getWidth() - e.getX());
+				currentText.setMaxHeight(image.getHeight() - e.getY());
+				if (back.isVisible())
+					back.add(currentText);
+				else
+					front.add(currentText);
+			}
+		} else
+			resetTextInput();
+		repaint();
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+	}
+
 	@Override
 	public void mousePressed(MouseEvent e) {
-		currentText = null;
+		resetTextInput();
 		if (image == null)
 			return;
 		startStroke(e);
@@ -167,7 +178,7 @@ public class PhotoComponent extends Scene implements MouseListener, MouseMotionL
 	public void keyTyped(KeyEvent e) {
 		if (image == null || currentText == null)
 			return;
-		
+
 		if (currentText.text == placeholder) {
 			currentText.text = "";
 		}

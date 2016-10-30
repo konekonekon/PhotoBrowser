@@ -8,7 +8,6 @@ import javax.swing.JComponent;
 public class Scene extends JComponent {
 
 	private static final long serialVersionUID = -4404963349605969650L;
-
 	private RootNode root;
 
 	public RootNode getRoot() {

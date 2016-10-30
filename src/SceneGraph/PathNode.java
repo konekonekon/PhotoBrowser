@@ -5,13 +5,13 @@ import java.awt.geom.GeneralPath;
 
 //stroke
 public class PathNode extends Node {
-	
+
 	private GeneralPath path;
-	
+
 	public PathNode(GeneralPath path) {
-		this.path = path;		
+		this.path = path;
 	}
-	
+
 	@Override
 	public Rectangle getBounds() {
 		return path.getBounds();

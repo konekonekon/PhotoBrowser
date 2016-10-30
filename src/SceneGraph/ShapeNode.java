@@ -1,15 +1,12 @@
 package SceneGraph;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.Shape;
+import java.awt.*;
 
 public class ShapeNode extends Node {
 
 	private Shape shape;
-	
-	public ShapeNode(Shape s){
+
+	public ShapeNode(Shape s) {
 		shape = s;
 	}
 
