@@ -108,6 +108,8 @@ public class PhotoComponent extends Scene implements MouseListener, MouseMotionL
 				/* Create new text */
 				currentText = new TextNode(placeholder, e.getPoint());
 				currentText.setColor(Color.RED);
+				currentText.setMaxWidth(image.getWidth() - e.getX());
+				currentText.setMaxHeight(image.getHeight() - e.getY());
 				if (back.isVisible()) {
 					back.add(currentText);
 				} else {
