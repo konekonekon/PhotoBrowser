@@ -48,17 +48,18 @@ public class PhotoComponent extends Scene {
 		repaint();*/
 	}
 	
-	/*@Override
+	@Override
 	protected void paintComponent(Graphics g) {
+		if (image != null)
+			updateView();
 		super.paintComponent(g);
-		if(image != null) {
-			
+		/*if(image != null) {
 			System.out.println("Displayed : " + left + " " + top + " " + viewRatio);
 			//repaint();
-		}
+		}*/
 		
 		//repaint();
-	 }*/
+	 }
 
 	/* Calculate view elements */
 	private void updateView() {
