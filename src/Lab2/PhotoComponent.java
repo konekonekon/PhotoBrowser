@@ -1,5 +1,6 @@
 package Lab2;
 
+import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -39,11 +40,25 @@ public class PhotoComponent extends Scene {
 
 		this.image = image;
 		backgroundNode = new ImageNode(image, 0, 0);
-		getRoot().add(backgroundNode);
-
 		updateView();
+		getRoot().add(backgroundNode);
 		repaint();
+		/*updateView();
+		System.out.println("Displayed : " + left + " " + top + " " + viewRatio);
+		repaint();*/
 	}
+	
+	/*@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		if(image != null) {
+			
+			System.out.println("Displayed : " + left + " " + top + " " + viewRatio);
+			//repaint();
+		}
+		
+		//repaint();
+	 }*/
 
 	/* Calculate view elements */
 	private void updateView() {
@@ -87,7 +102,9 @@ public class PhotoComponent extends Scene {
 		view.translate(left,  top);
 		view.scale(viewRatio, viewRatio);
 		getRoot().setTransform(view);
+		System.out.println("Updated : " + left + " " + top + " " + viewRatio);
 	}
+
 
 	/* Scale point: move & resize */
 	public Point physicToLogicPoint(Point p){
