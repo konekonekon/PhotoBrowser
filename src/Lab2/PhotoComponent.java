@@ -9,6 +9,7 @@ import SceneGraph.*;
 
 public class PhotoComponent extends Scene implements MouseListener, MouseMotionListener {
 
+	private static final long serialVersionUID = 1L;
 	private BufferedImage image;
 	private ImageNode imageNode;
 	private ContainerNode front;
@@ -54,9 +55,8 @@ public class PhotoComponent extends Scene implements MouseListener, MouseMotionL
 		
 		//add shape to back
 		shape = new ShapeNode(new Rectangle(0, 0, image.getWidth(), image.getHeight()));
-		shape.setColor(Color.WHITE);
 		back.add(shape);
-		
+		back.setVisible(false);
 		
 		repaint();
 	}
@@ -73,9 +73,29 @@ public class PhotoComponent extends Scene implements MouseListener, MouseMotionL
 	public void mouseMoved(MouseEvent arg0) {}
 
 	@Override
-	public void mouseClicked(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
+	public void mouseClicked(MouseEvent e) {
+		if (image != null) {
+			if (e.getClickCount() == 2) {
+				if (front.isVisible()){
+					front.setVisible(false);
+					back.setVisible(true);
+				}
+				else {
+					front.setVisible(true);
+					back.setVisible(false);
+				}
+					
+				// currentText = null;
+			}
+			/*
+			 * if (e.getClickCount() == 1) { this.requestFocusInWindow(); Create
+			 * new text //currentText = new Text("", viewPoint); if (isFlipped
+			 * == true) { textsInBack.add(currentText); } else {
+			 * textsInFront.add(currentText); } }
+			 */
+		}
+		repaint();
+
 	}
 
 	@Override
