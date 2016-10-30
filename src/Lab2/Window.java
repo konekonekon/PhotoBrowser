@@ -24,20 +24,8 @@ public class Window extends JFrame implements Performer {
 	
 	public Window(){
 		this.setTitle("Photo Browser");
-		this.setMinimumSize(new Dimension(220,150));
-		/* Center this window in screen */
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		int screenWidth = (int)screenSize.getWidth();
-		int screenHeight = (int)screenSize.getHeight();
-		int preferredWidth = (int)(screenWidth *0.7);
-		int preferredHeight = (int)(screenHeight *0.7);
-		this.setPreferredSize(new Dimension(preferredWidth, preferredHeight));
-		int preferredX = (screenWidth - preferredWidth) /2;
-		int preferredY = (screenHeight - preferredHeight) /2;
-		this.setLocation(preferredX, preferredY);
-		/* Set maximum size to screen size */
-		this.setMaximizedBounds(new Rectangle(screenWidth, screenHeight));
-		this.setResizable(true);
+		this.setPreferredSize(new Dimension(700,500));
+		this.setMinimumSize(new Dimension(700, 500));
 		this.setLayout(new BorderLayout());
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -46,15 +34,10 @@ public class Window extends JFrame implements Performer {
 		toolBar = new ToolBar(label);
 		photoComponent = new PhotoComponent();
 		scrollPane = new JScrollPane(photoComponent);
-		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		scrollPane.getVerticalScrollBar().setUnitIncrement(10);
-		scrollPane.getHorizontalScrollBar().setUnitIncrement(10);
 		
 		this.setJMenuBar(menu);	
 		this.add(toolBar, BorderLayout.NORTH);
 		this.add(label, BorderLayout.SOUTH);
-		this.add(scrollPane, BorderLayout.CENTER);
 
 		this.pack();
 		this.setVisible(true);
@@ -82,6 +65,7 @@ public class Window extends JFrame implements Performer {
 				//this.photoComponent.initializeComponent();
 				BufferedImage img = ImageIO.read(new File(path));
 				//this.add(scrollPane, BorderLayout.CENTER);
+				this.getContentPane().add(scrollPane);
 				this.photoComponent.setImage(img);
 			} catch (IOException e1) {
 				e1.printStackTrace();
@@ -99,14 +83,14 @@ public class Window extends JFrame implements Performer {
 	}
 	@Override
 	public void photoViewer() {
-		label.setText("Chose 'PhotoViewer mode'.");
+		/*label.setText("Chose 'PhotoViewer mode'.");
 		BufferedImage aImage = this.photoComponent.getImage();
 		this.add(scrollPane, BorderLayout.CENTER);
-		this.photoComponent.setImage(aImage);
+		this.photoComponent.setImage(aImage);*/
 	}
 	@Override
 	public void browser() {
-		label.setText("Choose 'Browser mode'.");
+		/*label.setText("Choose 'Browser mode'.");
 		int verticalGrid = 3;
 		int horizontalGrid = 2;
 		JPanel panel = new JPanel(); 
@@ -119,7 +103,7 @@ public class Window extends JFrame implements Performer {
 		for(int i = 0; i < verticalGrid*horizontalGrid; i++)
 			panel.add(thumb);
 		
-		this.add(panel, BorderLayout.CENTER);
+		this.add(panel, BorderLayout.CENTER);*/
 	}
 	@Override
 	public void split() {

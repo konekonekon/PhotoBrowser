@@ -1,8 +1,6 @@
 package Lab2;
 
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.geom.AffineTransform;
+import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 
 import SceneGraph.*;
@@ -11,25 +9,16 @@ public class PhotoComponent extends Scene {
 
 	private BufferedImage image;
 	private ImageNode backgroundNode;
-	
-	// View
-	private int viewWidth, viewHeight, imgWidth, imgHeight;
-	private int left, top, right, bottom;
-	private double viewRatio;
-	private AffineTransform view;
 
 	public PhotoComponent() {
 		reset();
-		viewWidth = 0; viewHeight = 0;
-		left = 0; top = 0; right = 0; bottom = 0;
-		viewRatio = 1;
 	}
-	
+
 	public void reset() {
 		image = null;
 		backgroundNode = null;
 	}
-	
+
 	public BufferedImage getImage() {
 		return image;
 	}
@@ -40,86 +29,9 @@ public class PhotoComponent extends Scene {
 
 		this.image = image;
 		backgroundNode = new ImageNode(image, 0, 0);
-		updateView();
 		getRoot().add(backgroundNode);
+		setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
 		repaint();
-		/*updateView();
-		System.out.println("Displayed : " + left + " " + top + " " + viewRatio);
-		repaint();*/
-	}
-	
-	@Override
-	protected void paintComponent(Graphics g) {
-		if (image != null)
-			updateView();
-		super.paintComponent(g);
-		/*if(image != null) {
-			System.out.println("Displayed : " + left + " " + top + " " + viewRatio);
-			//repaint();
-		}*/
-		
-		//repaint();
-	 }
-
-	/* Calculate view elements */
-	private void updateView() {
-		imgWidth = image.getWidth();
-		imgHeight = image.getHeight();
-		double imgRatio = (double) imgHeight / (double) imgWidth;
-
-		int cvsWidth = this.getWidth();
-		int cvsHeight = this.getHeight();
-		double cvsRatio = (double) cvsHeight / (double) cvsWidth;
-		
-		if (imgWidth < cvsWidth && imgHeight < cvsHeight) {
-			viewWidth = imgWidth;
-			viewHeight = imgHeight;
-			left = (cvsWidth - imgWidth) / 2;
-			top = (cvsHeight - imgHeight) / 2;
-			right = left + viewWidth;
-			bottom = top + viewHeight;
-		} 
-		else {
-			if (cvsRatio > imgRatio) {
-				viewWidth = cvsWidth;
-				viewHeight = (int) (viewWidth * imgRatio);
-				left = 0;
-				right = cvsWidth;
-				top = (cvsHeight - viewHeight) / 2;
-				bottom = top + viewHeight;
-			} 
-			else {
-				viewHeight = cvsHeight;
-				viewWidth = (int) (viewHeight / imgRatio);
-				top = 0;
-				bottom = cvsHeight;
-				left = (cvsWidth - viewWidth) / 2;
-				right = left + viewWidth;
-			}
-		}
-		viewRatio = (double) viewHeight / (double) imgHeight;
-		
-		view = new AffineTransform();
-		view.translate(left,  top);
-		view.scale(viewRatio, viewRatio);
-		getRoot().setTransform(view);
-		System.out.println("Updated : " + left + " " + top + " " + viewRatio);
-	}
-
-
-	/* Scale point: move & resize */
-	public Point physicToLogicPoint(Point p){
-		int logicX = (int) ((p.x - left) / viewRatio);
-		int logicY = (int) ((p.y - top) / viewRatio);
-		Point logicPoint = new Point(logicX, logicY);
-		return logicPoint;
-	}
-	
-	public Point logicToPhysicPoint(Point p){
-		int physicX = (int) (p.x * viewRatio) + left;
-		int physicY = (int) (p.y * viewRatio) + top;
-		Point physicPoint = new Point(physicX, physicY);
-		return physicPoint;
 	}
 
 }
